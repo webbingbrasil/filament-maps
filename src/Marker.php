@@ -17,6 +17,8 @@ class Marker
 
     protected string | Closure | null $popup = null;
 
+    protected string | Closure | null $action = '';
+
     final public function __construct(string $name)
     {
         $this->name($name);
@@ -79,5 +81,17 @@ class Marker
     public function getPopup(): ?string
     {
         return $this->evaluate($this->popup);
+    }
+
+    public function action(string | Closure | null  $action): static
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    public function getAction(): ?string
+    {
+        return $this->evaluate($this->action);
     }
 }

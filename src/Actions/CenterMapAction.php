@@ -14,14 +14,22 @@ class CenterMapAction extends Action
 
     protected int $zoom = 4;
 
+    protected bool $centerOnUserPosition = false;
+
     public static function getDefaultName(): ?string
     {
         return 'centerMap';
     }
 
-    public function centerTo(array $location, int $zoom): self
+    public function centerTo(array $location): self
     {
         $this->centerTo = $location;
+
+        return $this;
+    }
+
+    public function zoom(int $zoom): self
+    {
         $this->zoom = $zoom;
 
         return $this;
@@ -32,14 +40,57 @@ class CenterMapAction extends Action
         $this->label(__('Center map'));
         $this->icon(Blade::render('<x-filamentmapsicon-o-arrows-pointing-in class="p-1" />'));
         $this->action(function () {
-            $zoom = $this->zoom;
-            $latlng = json_encode($this->centerTo);
+            if ($this->centerOnUserPosition) {
+                return $this->getCenterOnUserPositionAction();
+            }
 
-            return <<<JS
-                () => {
-                    this.map.setView($latlng, $zoom);
-                }
-            JS;
+            return $this->getCenterToAction();
         });
     }
+
+    public function centerOnUserPosition(bool $condition = true): self
+    {
+        $this->centerOnUserPosition = $condition;
+        if ($condition) {
+            $this
+                ->name('userPosition')
+                ->label(__('Center on my position'))
+                ->icon(Blade::render('<x-filamentmapsicon-o-map-pin class="p-1" />'));
+        }
+
+        return $this;
+    }
+
+    protected function getCenterToAction(): string
+    {
+        $zoom = $this->zoom;
+        $latlng = json_encode($this->centerTo);
+
+        return <<<JS
+            () => {
+                this.map.setView($latlng, $zoom);
+            }
+        JS;
+    }
+
+    protected function getCenterOnUserPositionAction(): string
+    {
+        return <<<JS
+            () => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        this.removeMarker('userPosition');
+                        this.addMarker(
+                            'userPosition',
+                            position.coords.latitude,
+                            position.coords.longitude,
+                            'Você está aqui'
+                        );
+                        this.map.setView([position.coords.latitude, position.coords.longitude], $this->zoom);
+                    });
+                }
+            }
+        JS;
+    }
+
 }

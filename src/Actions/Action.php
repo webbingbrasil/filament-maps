@@ -18,6 +18,8 @@ class Action
 
     protected string | Closure | null $action = '';
 
+    protected string $position = 'topleft';
+
     final public function __construct(string $name)
     {
         $this->name($name);
@@ -66,5 +68,20 @@ class Action
     public function getAction(): string
     {
         return $this->evaluate($this->action);
+    }
+
+    public function position(string $position): static
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    public function getOptions(): array
+    {
+        return [
+            'id' => $this->getName(),
+            'position' => $this->position,
+        ];
     }
 }

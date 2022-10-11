@@ -31,8 +31,7 @@ class Map extends MapWidget
                 'zoom' => 2,
             ])
             ->actions([
-                Actions\UserPositionAction::make(),
-                Actions\CenterMapAction::make(),
+                Actions\CenterMapAction::make()->position('topright'),
             ])
             ->mapMarkers([
                 Marker::make('pos1')->lat(51.505)->lng(-0.09)->popup('I am a popup'),
@@ -60,20 +59,6 @@ You can pass to widget any options available on Leaftlet map constructor. See [L
 
 You can add actions to the map widget. Actions are buttons that can be clicked to perform an action using a JS callback. You can create your own actions or use the ones provided by the package.
 
-### User Position Action
-
-This action will center the map on the user's current position.
-
-```php
-use Webbingbrasil\FilamentMaps\Actions;
-
-$this
-    ->actions([
-        Actions\UserPositionAction::make(),
-    ])
-}
-```
-
 ### Center Map Action
 
 This action will center the map on a specific position.
@@ -83,9 +68,16 @@ use Webbingbrasil\FilamentMaps\Actions;
 
 $this
     ->actions([
-        Actions\CenterMapAction::make()->centerTo(location: [51.505, -0.09], zoom: 13),
+        Actions\CenterMapAction::make()->centerTo([51.505, -0.09])->zoom(13),
     ])
 }
+```
+
+You can also center the map on user position:
+
+
+```php
+    Actions\UserPositionAction::make()->centerOnUserPosition()->zoom(13)
 ```
 
 ### Custom Action
@@ -101,29 +93,54 @@ $this
             ->label(__('Center Map'))
             ->icon(Blade::render('<x-filamentmapsicon-o-arrows-pointing-in class="p-1" />'))
             ->action(<<<JS
-                function (map) {
-                    map.setView([51.505, -0.09], 13);
+                () => {
+                    this.map.setView([51.505, -0.09], 13);
                 }
             JS),
     ])
 }
 ```
 
+Use `this.map` to access the Leaflet map instance on your action callback.
+
+### Action Position
+
+You can set the position of the action using `position()` method:
+
+```php
+$this
+    ->actions([
+        Actions\CenterMapAction::make()->position('topright'),
+    ])
+}
+```
+
 ## Markers
 
-You can add markers to the map widget. Markers are points on the map that can be clicked to open a info popup.
-
-is action will center the map on the user's current position.
+You can add markers to the map widget. Markers are points on the map that can be clicked to open a info popup or execute a JS callback.
 
 ```php
 use Webbingbrasil\FilamentMaps\Marker;
 
 $this
     ->mapMarkers([
-        Marker::make('id')->lat(51.505)->lng(-0.09)->popup('I am a popup'),
+        Marker::make('id')
+            ->lat(51.505)
+            ->lng(-0.09)
+            ->popup('I am a popup'),
+        Marker::make('id')
+            ->lat(51.505)
+            ->lng(-0.09)
+            ->action(<<<JS
+                () => {
+                    alert('Hello World!');
+                }
+            JS),
     ])
 }
 ```
+
+Use `this.map` to access the Leaflet map instance on your action callback.
 
 ## Credits
 

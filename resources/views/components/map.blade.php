@@ -20,19 +20,22 @@
             this.map = L.map(this.$refs.map, {{ json_encode($options) }});
             L.tileLayer('{{ $tileLayerUrl }}', {{ json_encode($tileLayerOptions) }}).addTo(this.map);
             @foreach ($markers as $marker)
-                this.addMarker('{{ $marker->getName()  }}',{{ $marker->getLat() }}, {{ $marker->getLng() }}, {{ json_encode($marker->getPopup()) }});
+                this.addMarker('{{ $marker->getName()  }}',{{ $marker->getLat() }}, {{ $marker->getLng() }}, {{ json_encode($marker->getPopup()) }}, {{ trim($marker->getAction()) }});
             @endforeach
             @foreach($controls as $control)
-                this.addControl('{{ $control->getName() }}', {{ json_encode($control->getIcon()) }}, {{ trim($control->getAction()) }}, {{ json_encode($control->getLabel()) }});
+                this.addControl({{ json_encode($control->getIcon()) }}, {{ trim($control->getAction()) }}, {{ json_encode($control->getLabel()) }}, {{ json_encode($control->getOptions()) }});
             @endforeach
         },
-        addControl(id, icon, callback, label) {
-            L.easyButton(icon, callback, label, id).addTo(this.map);
+        addControl(icon, callback, label, options) {
+            L.easyButton(icon, callback, label, options).addTo(this.map);
         },
-        addMarker(id, lat, lng, info) {
+        addMarker(id, lat, lng, info, callback) {
             const marker = L.marker([lat, lng]).addTo(this.map);
             if (info) {
                 marker.bindPopup(info);
+            }
+            if (callback) {
+                marker.on('click', callback);
             }
             this.markers.push({id, marker});
         },

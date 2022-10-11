@@ -1,0 +1,40 @@
+{
+    "name": "webbingbrasil/filament-maps",
+    "description": "Map components for Filament.",
+    "keywords": [
+        "laravel",
+        "filament"
+    ],
+    "homepage": "https://github.com/webbingbrasil/filament-maps",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Danilo Andrade",
+            "email": "danilo@webbingbrasil.com.br",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "filament/filament": "^2.16"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Webbingbrasil\\FilamentMaps\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webbingbrasil\\FilamentMaps\\FilamentMapsProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

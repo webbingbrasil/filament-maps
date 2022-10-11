@@ -17,7 +17,7 @@ class Marker
 
     protected string | Closure | null $popup = null;
 
-    protected string | Closure | null $action = '';
+    protected string | Closure | null $callback = '';
 
     final public function __construct(string $name)
     {
@@ -83,15 +83,15 @@ class Marker
         return $this->evaluate($this->popup);
     }
 
-    public function action(string | Closure | null  $action): static
+    public function callback(string | Closure | null  $callback): static
     {
-        $this->action = $action;
+        $this->callback = $callback;
 
         return $this;
     }
 
-    public function getAction(): ?string
+    public function getCallback(): ?string
     {
-        return $this->evaluate($this->action);
+        return $this->evaluate($this->callback);
     }
 }

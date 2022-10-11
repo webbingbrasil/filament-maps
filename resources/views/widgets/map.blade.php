@@ -34,8 +34,8 @@
                 :tile-layer-options="$this->getTileLayerOptions()"
                 :height="$this->getHeight()"
                 :options="$this->getMapOptions()"
-                :controls="$this->getActions()"
-                :markers="$this->getMapMarkers()"
+                :actions="$this->getCachedActions()"
+                :markers="$this->getMarkers()"
                 :extra-attribute-bag="$this->getExtraAttributeBag()"
                 :extra-alpine-attribute-bag="$this->getExtraAlpineAttributeBag()" />
         </div>

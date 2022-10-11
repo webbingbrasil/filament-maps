@@ -3,71 +3,58 @@
 namespace Webbingbrasil\FilamentMaps\Actions;
 
 use Closure;
+use Filament\Pages\Actions\Modal\Actions\Action as ModalAction;
+use Filament\Support\Actions\Action as BaseAction;
 use Filament\Support\Actions\Concerns;
-use Filament\Support\Concerns\Configurable;
-use Filament\Support\Concerns\EvaluatesClosures;
+use Illuminate\Database\Eloquent\Model;
+use Webbingbrasil\FilamentMaps\Actions\Concerns\HasCallback;
+use Webbingbrasil\FilamentMaps\Actions\Concerns\BelongsToLivewire;
 
-class Action
+class Action extends BaseAction
 {
-    use Concerns\HasName;
-    use Concerns\HasLabel;
-    use EvaluatesClosures;
-    use Configurable;
-
-    protected string | Closure | null $icon = null;
-
-    protected string | Closure | null $action = '';
+    use Concerns\CanBeDisabled;
+    use Concerns\CanBeOutlined;
+    use Concerns\CanOpenUrl;
+    use Concerns\CanEmitEvent;
+    use Concerns\CanSubmitForm;
+    use Concerns\HasKeyBindings;
+    use Concerns\HasTooltip;
+    use Concerns\InteractsWithRecord;
+    use HasCallback;
+    use BelongsToLivewire;
 
     protected string $position = 'topleft';
 
-    final public function __construct(string $name)
+    protected string $view = 'filament-maps::button-action';
+
+    protected string | Closure | null  $color = 'secondary';
+
+    protected function getLivewireCallActionName(): string
     {
-        $this->name($name);
+        return 'callMountedAction';
     }
 
-    public static function make(?string $name = null): static
+    protected static function getModalActionClass(): string
     {
-        $actionClass = static::class;
-
-        $name ??= static::getDefaultName();
-
-        if (blank($name)) {
-            throw new Exception("Action of class [$actionClass] must have a unique name, passed to the [make()] method.");
-        }
-
-        $static = app($actionClass, ['name' => $name]);
-        $static->configure();
-
-        return $static;
+        return ModalAction::class;
     }
 
-    public static function getDefaultName(): ?string
+    public static function makeModalAction(string $name): ModalAction
     {
-        return null;
+        /** @var ModalAction $action */
+        $action = parent::makeModalAction($name);
+
+        return $action;
     }
 
-    public function icon(string | Closure | null $icon): static
+    protected function getDefaultEvaluationParameters(): array
     {
-        $this->icon = $icon;
-
-        return $this;
-    }
-
-    public function getIcon(): ?string
-    {
-        return $this->evaluate($this->icon);
-    }
-
-    public function action(string | Closure | null $action): static
-    {
-        $this->action = $action;
-
-        return $this;
-    }
-
-    public function getAction(): string
-    {
-        return $this->evaluate($this->action);
+        return array_merge(parent::getDefaultEvaluationParameters(), [
+            'record' => $this->resolveEvaluationParameter(
+                'record',
+                fn (): ?Model => $this->getRecord(),
+            ),
+        ]);
     }
 
     public function position(string $position): static
@@ -77,11 +64,16 @@ class Action
         return $this;
     }
 
+    public function getPosition(): string
+    {
+        return $this->position;
+    }
+
     public function getOptions(): array
     {
         return [
             'id' => $this->getName(),
-            'position' => $this->position,
+            'position' => $this->getPosition(),
         ];
     }
 }

@@ -23,40 +23,49 @@ use Webbingbrasil\FilamentMaps\Widgets\MapWidget;
 class Map extends MapWidget
 {
     protected int | string | array $columnSpan = 2;
+    
+    protected bool $hasBorder = false;
 
-    public function mount()
+    public function getMarkers(): array
     {
-        $this
-            ->hasBorder(false)
-            ->rounded(false)
-            ->mapOptions([
-                'center' => [0, 0],
-                'zoom' => 2,
-            ])
-            ->actions([
-                Actions\CenterMapAction::make()->position('topright'),
-            ])
-            ->mapMarkers([
-                Marker::make('pos1')->lat(51.505)->lng(-0.09)->popup('I am a popup'),
-                Marker::make('pos2')->lat(-15.7942)->lng(-47.8822)->popup('Hello Brasilia!'),
-            ]);
+        return [
+            Marker::make('pos2')->lat(-15.7942)->lng(-47.8822)->popup('Hello Brasilia!'),
+        ];
+    }
+
+    public function getActions(): array
+    {
+        return [
+            Actions\ZoomAction::make(),
+            Actions\CenterMapAction::make()->zoom(2),
+        ];
     }
 }
 ```
 
 ### Tile Layers
 
-The map uses OpenStreetMap tiles by default, but you can change it to use any other provider using `tileLayer()` method:
+The map uses OpenStreetMap tiles by default, but you can change it to use any other provider using `getTileLayerUrl()` method or `$tileLayerUrl` propert:
 
 ```php
-$this->tileLayer(url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', options: [
+protected string $tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+```
+
+Also update the attribution information using `getTileLayerOptions()` method or `$tileLayerOptions` property:
+
+```php
+protected array $tileLayerOptions = [
     'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-]);
+];
 ```
 
 ### Map Options
 
 You can pass to widget any options available on Leaftlet map constructor. See [Leaflet documentation](https://leafletjs.com/reference.html#map-option) for more details.
+
+```php
+protected array $mapOptions = ['center' => [0, 0], 'zoom' => 2];
+```
 
 ## Actions
 
@@ -69,10 +78,11 @@ This action will center the map on a specific position.
 ```php
 use Webbingbrasil\FilamentMaps\Actions;
 
-$this
-    ->actions([
+public function getActions(): array
+{
+    return [
         Actions\CenterMapAction::make()->centerTo([51.505, -0.09])->zoom(13),
-    ])
+    ];
 }
 ```
 
@@ -86,26 +96,47 @@ You can also center the map on user position:
 
 ### Custom Action
 
-You can create your own actions using `Webbingbrasil\FilamentMaps\Actions\Action`:
+You can create your own actions using `Webbingbrasil\FilamentMaps\Actions\Action`.
 
 ```php
 use Webbingbrasil\FilamentMaps\Actions;
 
-$this
-    ->actions([
-        Actions\Action::make('centermap')
-            ->label(__('Center Map'))
-            ->icon(Blade::render('<x-filamentmapsicon-o-arrows-pointing-in class="p-1" />'))
-            ->action(<<<JS
-                () => {
-                    this.map.setView([51.505, -0.09], 13);
-                }
-            JS),
-    ])
-}
+Actions\Action::make('form')
+        ->icon('filamentmapsicon-o-arrows-pointing-in')
+        ->form([
+            Forms\Components\TextInput::make('name')
+                ->label('Name')
+                ->required(),
+            Forms\Components\TextInput::make('lat')
+                ->label('Latitude')
+                ->required(),
+            Forms\Components\TextInput::make('lng')
+                ->label('Longitude')
+                ->required(),
+        ])
+        ->action(function (array $data, self $livewire) {
+            $livewire
+                ->addMarker(
+                    Marker::make(Str::camel($data['name']))
+                        ->lat($data['lat'])
+                        ->lng($data['lng'])
+                        ->popup($data['name'])
+                );
+        })
 ```
 
-Use `this.map` to access the Leaflet map instance on your action callback.
+#### Using JS Callback
+
+This approach is useful if you want to use a custom javascript to manipulate the map:
+
+```php
+Actions\Action::make('center')
+    ->callback(<<<JS
+        () => { map.setView([0,0], 2) }
+    JS)
+```
+
+> Use `map` property to access the Leaflet instance on your action callback.
 
 ### Action Position
 
@@ -121,10 +152,10 @@ $this
 
 ### Action Icon
 
-You can set the icon of the action using `icon()` method passing a HTML string. You can use icons from [Blade UI Kit](https://blade-ui-kit.com/blade-icons) or [Heroicons](https://heroicons.com/):
+You can set the icon of the action using `icon()` method:
 
 ```php
-Actions\Action::make()->icon(Blade::render('<x-heroicon-o-home />'))
+Actions\Action::make()->icon('heroicon-o-home')
 ```
 
 
@@ -144,7 +175,7 @@ $this
         Marker::make('id')
             ->lat(51.505)
             ->lng(-0.09)
-            ->action(<<<JS
+            ->callback(<<<JS
                 () => {
                     alert('Hello World!');
                 }
@@ -153,7 +184,7 @@ $this
 }
 ```
 
-Use `this.map` to access the Leaflet map instance on your action callback.
+>Use `map` to access the Leaflet instance on your action callback.
 
 ## Widget Customization
 

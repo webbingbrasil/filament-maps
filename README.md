@@ -119,6 +119,15 @@ $this
 }
 ```
 
+### Action Icon
+
+You can set the icon of the action using `icon()` method passing a HTML string. You can use icons from [Blade UI Kit](https://blade-ui-kit.com/blade-icons) or [Heroicons](https://heroicons.com/):
+
+```php
+Actions\Action::make()->icon(Blade::render('<x-heroicon-o-home />'))
+```
+
+
 ## Markers
 
 You can add markers to the map widget. Markers are points on the map that can be clicked to open a info popup or execute a JS callback.

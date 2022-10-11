@@ -1,7 +1,7 @@
 # Filament Maps
 
 
-![](https://banners.beyondco.de/Filament%20Maps.png?theme=light&packageManager=composer+require&packageName=webbingbrasil%2Ffilament-maps&pattern=architect&style=style_1&description=A+leafletwidget+for+Filament+Admin&md=1&showWatermark=0&fontSize=100px&images=location-marker)
+![](https://banners.beyondco.de/Filament%20Maps.png?theme=light&packageManager=composer+require&packageName=webbingbrasil%2Ffilament-maps&pattern=architect&style=style_1&description=A+leaflet+widget+for+Filament+Admin&md=1&showWatermark=0&fontSize=100px&images=location-marker)
 
 Render map widgets using [Leaflet](https://leafletjs.com/).
 

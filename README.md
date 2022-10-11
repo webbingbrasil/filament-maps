@@ -1,5 +1,8 @@
 # Filament Maps
 
+
+![](https://banners.beyondco.de/Filament%20Maps.png?theme=light&packageManager=composer+require&packageName=webbingbrasil%2Ffilament-maps&pattern=architect&style=style_1&description=A+leafletwidget+for+Filament+Admin&md=1&showWatermark=0&fontSize=100px&images=location-marker)
+
 Render map widgets using [Leaflet](https://leafletjs.com/).
 
 ## Installation
@@ -75,10 +78,11 @@ $this
 
 You can also center the map on user position:
 
-
 ```php
     Actions\UserPositionAction::make()->centerOnUserPosition()->zoom(13)
 ```
+
+> Note: This action will only work if the user browser supports [Navigator.geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation). Also, the user must be on a secure context (HTTPS) and needs to allow access to the location.
 
 ### Custom Action
 
@@ -141,6 +145,23 @@ $this
 ```
 
 Use `this.map` to access the Leaflet map instance on your action callback.
+
+## Widget Customization
+
+You can customize the widget using the following methods:
+
+- `hasBorder()`: set to `true` to show a border around the map. Default is `true`.
+- `rounded()`: set to `true` to show a rounded border around the map. Default is `true`.
+- `height()`: set the height of the map. Default is `400px`.
+- `heading()`: set the heading of the map.
+- `footer()`: set the footer of the map.
+
+## Images
+
+![Map without borders, header or footer](./docs/images/image1.png)
+![Marker popover](./docs/images/image2.png)
+![Map without borders with header](./docs/images/image3.png)
+![Map with borders, header and footer](./docs/images/image4.png)
 
 ## Credits
 

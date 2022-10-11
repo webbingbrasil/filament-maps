@@ -27,7 +27,7 @@ class MapWidget extends Widget
 
     protected string $height = '400px';
 
-    protected ?string $heading = null;
+    protected Closure | string | Htmlable | null $heading = null;
 
     protected Closure | string | Htmlable | null $footer = null;
 
@@ -47,7 +47,7 @@ class MapWidget extends Widget
         return $this->evaluate($this->height);
     }
 
-    public function heading(string | Closure $heading): self
+    public function heading(string | Closure | Htmlable | null $heading): self
     {
         $this->heading = $heading;
 

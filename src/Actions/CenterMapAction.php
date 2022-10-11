@@ -16,6 +16,8 @@ class CenterMapAction extends Action
 
     protected bool $centerOnUserPosition = false;
 
+    protected string $userPositionLabel = 'you are here';
+
     public static function getDefaultName(): ?string
     {
         return 'centerMap';
@@ -48,9 +50,10 @@ class CenterMapAction extends Action
         });
     }
 
-    public function centerOnUserPosition(bool $condition = true): self
+    public function centerOnUserPosition(bool $condition = true, string $label = 'you are here'): self
     {
         $this->centerOnUserPosition = $condition;
+        $this->userPositionLabel = $label;
         if ($condition) {
             $this
                 ->name('userPosition')
@@ -84,7 +87,7 @@ class CenterMapAction extends Action
                             'userPosition',
                             position.coords.latitude,
                             position.coords.longitude,
-                            'Você está aqui'
+                            '{$this->userPositionLabel}'
                         );
                         this.map.setView([position.coords.latitude, position.coords.longitude], $this->zoom);
                     });

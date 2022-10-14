@@ -133,7 +133,7 @@ You can also center the map on user position:
     Actions\UserPositionAction::make()->centerOnUserPosition()->zoom(13)
 ```
 
-> Note: This action will only work if the user browser supports [Navigator.geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation). Also, the user must be on a secure context (HTTPS) and needs to allow access to the location.
+> Note: The center on user position feature will only work if the user browser supports [Navigator.geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation). Also, the user must be on a secure context (HTTPS) and needs to allow access to the location.
 
 ### Custom Action
 

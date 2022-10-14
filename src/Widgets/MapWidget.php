@@ -39,7 +39,7 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
 
     public function mount()
     {
-        $this->markers = collect($this->markers())
+        $this->markers = collect($this->getMarkers())
             ->map(function (array | Marker $marker) {
                 if ($marker instanceof Marker) {
                     return $marker->toArray();
@@ -77,10 +77,26 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
 
     public function getMarkers(): array
     {
-        return $this->markers;
+        return [];
     }
 
-    abstract public function markers(): array;
+    /**
+     * @deprecated Extend getMarkers() instead in your widget class and return an array of Marker instances.
+     */
+    public function mapMarkers(array $markers): self
+    {
+        $this->markers = collect($markers)
+            ->map(function (array | Marker $marker) {
+                if ($marker instanceof Marker) {
+                    return $marker->toArray();
+                }
+
+                return $marker;
+            })
+            ->toArray();
+
+        return $this;
+    }
 
     public function height(string $height): self
     {

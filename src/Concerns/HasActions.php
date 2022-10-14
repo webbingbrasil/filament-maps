@@ -211,6 +211,9 @@ trait HasActions
         return null;
     }
 
+    /**
+     * @deprecated Extend getActions() in your widget class instead.
+     */
     public function actions(array | Closure $actions): self
     {
         $this->actions = $actions;

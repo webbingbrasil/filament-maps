@@ -6,7 +6,7 @@ use Closure;
 
 trait HasMapOptions
 {
-    protected array | Closure $mapOptions = [];
+    protected array $mapOptions = ['center' => [0, 0], 'zoom' => 2];
 
     public function mapOptions(array | Closure $mapOptions): self
     {
@@ -17,7 +17,7 @@ trait HasMapOptions
 
     public function getMapOptions(): array
     {
-        return $this->evaluate($this->mapOptions);
+        return $this->mapOptions;
     }
 
 }

@@ -2,42 +2,38 @@
 
 namespace Webbingbrasil\FilamentMaps\Concerns;
 
-use Closure;
-
 trait HasTileLayer
 {
-    protected string | Closure $tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    protected string $tileLayerMode = 'default';
 
-    protected array | Closure $tileLayerOptions = [
-        'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+    protected string | array $tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+    protected array $tileLayerOptions = [
+        'attribution' => '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
     ];
 
-    public function tileLayer(string | Closure $url, array | Closure $options = []): static
+    public function getTileLayerUrl(): string | array
     {
-        return $this->tileLayerUrl($url)->tileLayerOptions($options);
-    }
+        if(is_array($this->tileLayerUrl)) {
+            return $this->tileLayerUrl;
+        }
 
-    public function getTileLayerUrl(): string
-    {
-        return $this->evaluate($this->tileLayerUrl);
-    }
-
-    public function tileLayerUrl(string | Closure $tileLayerUrl): self
-    {
-        $this->tileLayerUrl = $tileLayerUrl;
-
-        return $this;
+        return [$this->tileLayerMode => $this->tileLayerUrl];
     }
 
     public function getTileLayerOptions(): array
     {
-        return $this->evaluate($this->tileLayerOptions);
+        return $this->tileLayerOptions;
     }
 
-    public function tileLayerOptions(array | Closure $tileLayerOptions): self
+    public function getTileLayerMode(): string
     {
-        $this->tileLayerOptions = $tileLayerOptions;
+        $titleLayerModes = array_keys($this->getTileLayerUrl());
 
-        return $this;
+        if (in_array($this->tileLayerMode, $titleLayerModes)) {
+            return $this->tileLayerMode;
+        }
+
+        return $titleLayerModes[0];
     }
 }

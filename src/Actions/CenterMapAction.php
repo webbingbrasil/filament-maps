@@ -18,6 +18,19 @@ class CenterMapAction extends Action
 
     protected string $userPositionLabel = 'you are here';
 
+    protected function setUp(): void
+    {
+        $this->label(__('Center map'));
+        $this->icon('filamentmapsicon-o-arrows-pointing-in');
+        $this->callback(function () {
+            if ($this->centerOnUserPosition) {
+                return $this->getCenterOnUserPositionAction();
+            }
+
+            return $this->getCenterToAction();
+        });
+    }
+
     public static function getDefaultName(): ?string
     {
         return 'centerMap';
@@ -37,19 +50,6 @@ class CenterMapAction extends Action
         return $this;
     }
 
-    protected function setUp(): void
-    {
-        $this->label(__('Center map'));
-        $this->icon(Blade::render('<x-filamentmapsicon-o-arrows-pointing-in class="p-1" />'));
-        $this->action(function () {
-            if ($this->centerOnUserPosition) {
-                return $this->getCenterOnUserPositionAction();
-            }
-
-            return $this->getCenterToAction();
-        });
-    }
-
     public function centerOnUserPosition(bool $condition = true, string $label = 'you are here'): self
     {
         $this->centerOnUserPosition = $condition;
@@ -58,7 +58,7 @@ class CenterMapAction extends Action
             $this
                 ->name('userPosition')
                 ->label(__('Center on my position'))
-                ->icon(Blade::render('<x-filamentmapsicon-o-map-pin class="p-1" />'));
+                ->icon('filamentmapsicon-o-map-pin');
         }
 
         return $this;
@@ -70,9 +70,7 @@ class CenterMapAction extends Action
         $latlng = json_encode($this->centerTo);
 
         return <<<JS
-            () => {
-                this.map.setView($latlng, $zoom);
-            }
+            () => { map.setView($latlng, $zoom) }
         JS;
     }
 
@@ -80,16 +78,18 @@ class CenterMapAction extends Action
     {
         return <<<JS
             () => {
+                removeMarker('userPosition');
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition((position) => {
-                        this.removeMarker('userPosition');
-                        this.addMarker(
-                            'userPosition',
-                            position.coords.latitude,
-                            position.coords.longitude,
-                            '{$this->userPositionLabel}'
-                        );
-                        this.map.setView([position.coords.latitude, position.coords.longitude], $this->zoom);
+                        if (position.coords.latitude && position.coords.longitude) {
+                            addMarker(
+                                'userPosition',
+                                position.coords.latitude,
+                                position.coords.longitude,
+                                '{$this->userPositionLabel}'
+                            );
+                            map.setView([position.coords.latitude, position.coords.longitude], $this->zoom);
+                        }
                     });
                 }
             }

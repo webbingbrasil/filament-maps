@@ -237,10 +237,12 @@ You can customize the widget using the following methods:
 
 ## Images
 
-![Map without borders, header or footer](./docs/images/image1.png)
-![Marker popover](./docs/images/image2.png)
-![Map without borders with header](./docs/images/image3.png)
-![Map with borders, header and footer](./docs/images/image4.png)
+![Header & Footer](./docs/images/image-header-footer.png)
+![Compact](./docs/images/image-compact.png)
+![Only Header](./docs/images/image-only-header.png)
+![Light Mode](./docs/images/image-light-mode.png)
+![Dark Mode](./docs/images/image-dark-mode.png)
+![Modal Action](./docs/images/image-modal-action.png)
 
 ## Credits
 

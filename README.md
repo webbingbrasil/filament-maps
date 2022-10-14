@@ -240,13 +240,13 @@ $this
 
 ## Widget Customization
 
-You can customize the widget using the following methods:
+You can customize the widget using the following properties:
 
-- `hasBorder()`: set to `true` to show a border around the map. Default is `true`.
-- `rounded()`: set to `true` to show a rounded border around the map. Default is `true`.
-- `height()`: set the height of the map. Default is `400px`.
-- `heading()`: set the heading of the map.
-- `footer()`: set the footer of the map.
+- `$hasBorder`: set to `true` to show a border around the map. Default is `true`.
+- `$rounded`: set to `true` to show a rounded border around the map. Default is `true`.
+- `$height`: set the height of the map. Default is `400px`.
+- `$heading`: set the heading of the map.
+- `$footer`: set the footer of the map.
 
 ## Images
 

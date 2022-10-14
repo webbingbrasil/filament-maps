@@ -7,7 +7,6 @@
     'height' => '400px',
     'options' => [],
     'actions' => [],
-    'markers' => [],
     'extraAttributeBag' => '',
     'extraAlpineAttributeBag' => '',
     'modals' => null,
@@ -22,65 +21,112 @@
 <div>
     <div
         {{ $attributes->class('h-full w-full overflow-hidden') }}
-        {{ $extraAttributeBag }}
-        {{ $extraAlpineAttributeBag }}>
+        {{ $extraAttributeBag }}>
         <div
+            wire:ignore
             x-data="{
-            map: null,
-            markers: [],
-            init: function () {
-                if (!window.filamentMaps['{{ $this->getName() }}']) {
-                    window.filamentMaps['{{ $this->getName() }}'] = L.map(this.$refs.map, {{ json_encode(array_merge($options, ['zoomControl' => false])) }});
-                }
-                this.map = window.filamentMaps['{{ $this->getName() }}'];
+                mode: null,
 
-                L.tileLayer('{{ $tileLayerUrl }}', {{ json_encode($tileLayerOptions) }}).addTo(this.map);
-                @foreach ($markers as $marker)
-                    this.addMarker('{{ $marker->getName()  }}',{{ $marker->getLat() }}, {{ $marker->getLng() }}, {{ json_encode($marker->getPopup()) }}, {{ trim($marker->getCallback()) }});
-                @endforeach
-                @foreach($actions as $action)
-                    this.addAction('{{ $action->getName()  }}', '{{ $action->getPosition() }}');
-                @endforeach
-            },
-            addAction(id, position) {
-    {{--            L.easyButton(icon, callback, label, options).addTo(this.map);--}}
+                map: null,
+
+                markers: [],
+
+                tileLayers: {},
+
+                markersData: @entangle('markers'),
+
+                init: function () {
+                    if (window.filamentMaps['{{ $this->getName() }}']) {
+                        window.filamentMaps['{{ $this->getName() }}'].off();
+                        window.filamentMaps['{{ $this->getName() }}'].remove();
+                    }
+                    window.filamentMaps['{{ $this->getName() }}'] = L.map(this.$refs.map, {{ json_encode(array_merge($options, ['zoomControl' => false])) }});
+                    this.map = window.filamentMaps['{{ $this->getName() }}'];
+
+                    @foreach((array) $tileLayerUrl as $mode => $url)
+                    this.tileLayers['{{ $mode }}'] = L.tileLayer('{{ $url }}', {{ json_encode($tileLayerOptions[$mode] ?? $tileLayerOptions) }});
+                    @endforeach
+
+                    let initialMode = '{{ $this->getTileLayerMode() }}';
+                    if (
+                        document.documentElement.classList.contains('dark') &&
+                        this.tileLayers['dark']
+                    ) {
+                        initialMode = 'dark';
+                    }
+                    this.setTileLayer(initialMode);
+
+                    this.updateMarkers(this.markersData);
+                    $watch('markersData', (markers) => {
+                        this.updateMarkers(markers);
+                    });
+
+                    @foreach($actions as $action)
+                        this.addAction('{{ $action->getMapActionId()  }}', '{{ $action->getPosition() }}');
+                    @endforeach
+                },
+                setTileLayer: function (mode) {
+                    if (this.tileLayers[mode]) {
+                        if (this.mode && this.mode != mode && this.map.hasLayer(this.tileLayers[this.mode])) {
+                            this.map.removeLayer(this.tileLayers[this.mode]);
+                        }
+
+                        this.mode = mode;
+                        this.tileLayers[mode].addTo(this.map);
+
+                        return;
+                    }
+                },
+                updateMarkers: function (markers) {
+                    if (this.map) {
+                        markers.forEach(function (marker) {
+                            this.addMarker(marker.id, marker.lat, marker.lng, marker.info, marker.callback);
+                        }.bind(this));
+                    }
+                },
+                addAction(id, position) {
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
-            },
-            addMarker(id, lat, lng, info, callback) {
-                const marker = L.marker([lat, lng]).addTo(this.map);
-                if (info) {
-                    marker.bindPopup(info);
-                }
-                if (callback) {
-                    marker.on('click', callback);
-                }
-                this.markers.push({id, marker});
-            },
-            removeMarker(id) {
-                const m = this.markers.find(m => m.id === id);
-                if (m) {
-                    m.marker.remove();
-                    this.markers = this.markers.filter(m => m.id !== id);
-                }
-            },
-            removeAllMarkers() {
-                this.markers.forEach(({marker}) => marker.remove());
-                this.markers = [];
-            },
-        }">
+                },
+                addMarker(id, lat, lng, info, callback) {
+                    this.removeMarker(id);
+                    const mMarker = L.marker([lat, lng]).addTo(this.map);
+                    if (info) {
+                        mMarker.bindPopup(info);
+                    }
+                    if (callback) {
+                        mMarker.on('click', callback);
+                    }
+                    this.markers.push({id, marker: mMarker});
+                },
+                removeMarker(id) {
+                    const m = this.markers.find(m => m.id === id);
+                    if (m) {
+                        m.marker.remove();
+                        this.markers = this.markers.filter(m => m.id !== id);
+                    }
+                },
+                removeAllMarkers() {
+                    this.markers.forEach(({marker}) => marker.remove());
+                    this.markers = [];
+                },
+            }"
+            {{ $extraAlpineAttributeBag }}
+        >
             @if (count($actions))
-                <div wire:ignore
+                <div
                     {{ $attributes->class([
                         'filament-map-actions',
                     ]) }}
                 >
                     @foreach ($actions as $action)
-                        {{ $action }}
+                        <div class="filament-map-button justify-center content-center" id="{{ $action->getMapActionId() }}">
+                            {{ $action }}
+                        </div>
                     @endforeach
                 </div>
             @endif
-            <div wire:ignore x-ref="map" class="flex-1 relative z-10" style="width: 100%; height: {{ $height }}"></div>
+            <div x-ref="map" class="flex-1 relative" style="width: 100%; height: {{ $height }}; z-index: 2"></div>
         </div>
     </div>
 
@@ -90,7 +136,7 @@
         @endphp
 
         <x-filament::modal
-            id="map-action"
+            id="{{ $this->getModalActionId() }}"
             :wire:key="$action ? $this->id . '.actions.' . $action->getName() . '.modal' : null"
             :visible="filled($action)"
             :width="$action?->getModalWidth()"

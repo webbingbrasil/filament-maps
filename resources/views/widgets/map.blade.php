@@ -35,7 +35,6 @@
                 :height="$this->getHeight()"
                 :options="$this->getMapOptions()"
                 :actions="$this->getCachedActions()"
-                :markers="$this->getMarkers()"
                 :extra-attribute-bag="$this->getExtraAttributeBag()"
                 :extra-alpine-attribute-bag="$this->getExtraAlpineAttributeBag()" />
         </div>

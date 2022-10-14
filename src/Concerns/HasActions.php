@@ -5,6 +5,7 @@ namespace Webbingbrasil\FilamentMaps\Concerns;
 use Closure;
 use Filament\Forms;
 use Filament\Pages\Contracts\HasFormActions;
+use Illuminate\Support\Str;
 use Webbingbrasil\FilamentMaps\Actions\Action;
 use Filament\Support\Exceptions\Cancel;
 use Filament\Support\Exceptions\Halt;
@@ -19,6 +20,11 @@ trait HasActions
     protected ?array $cachedActions = null;
 
     protected array | Closure $actions = [];
+
+    public function getModalActionId(): string
+    {
+        return Str::afterLast($this->getName(), '.') . '.modal-action';
+    }
 
     public function callMountedAction(?string $arguments = null)
     {
@@ -61,7 +67,7 @@ trait HasActions
         $action->resetFormData();
 
         $this->dispatchBrowserEvent('close-modal', [
-            'id' => 'map-action',
+            'id' => $this->getModalActionId(),
         ]);
 
         return $result;
@@ -109,7 +115,7 @@ trait HasActions
         $this->resetErrorBag();
 
         $this->dispatchBrowserEvent('open-modal', [
-            'id' => 'map-action',
+            'id' => $this->getModalActionId(),
         ]);
     }
 

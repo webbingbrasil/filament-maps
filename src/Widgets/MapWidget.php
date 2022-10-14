@@ -2,7 +2,6 @@
 
 namespace Webbingbrasil\FilamentMaps\Widgets;
 
-use Closure;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Support\Concerns\HasExtraAlpineAttributes;
@@ -11,11 +10,11 @@ use Filament\Tables\Contracts\RendersFormComponentActionModal;
 use Filament\Widgets\Widget;
 use Illuminate\Contracts\Support\Htmlable;
 use Webbingbrasil\FilamentMaps\Concerns\HasActions;
-use Webbingbrasil\FilamentMaps\Concerns\HasMarkers;
 use Webbingbrasil\FilamentMaps\Concerns\HasMapOptions;
 use Webbingbrasil\FilamentMaps\Concerns\HasTileLayer;
+use Webbingbrasil\FilamentMaps\Marker;
 
-class MapWidget extends Widget implements HasForms, RendersFormComponentActionModal
+abstract class MapWidget extends Widget implements HasForms, RendersFormComponentActionModal
 {
     use HasExtraAttributes;
     use HasExtraAlpineAttributes;
@@ -23,7 +22,6 @@ class MapWidget extends Widget implements HasForms, RendersFormComponentActionMo
     use HasTileLayer;
     use HasActions;
     use HasMapOptions;
-    use HasMarkers;
 
     protected static string $view = 'filament-maps::widgets.map';
 
@@ -36,6 +34,53 @@ class MapWidget extends Widget implements HasForms, RendersFormComponentActionMo
     protected bool $hasBorder = true;
 
     protected bool $rounded = true;
+
+    public array $markers = [];
+
+    public function mount()
+    {
+        $this->markers = collect($this->markers())
+            ->map(function (array | Marker $marker) {
+                if ($marker instanceof Marker) {
+                    return $marker->toArray();
+                }
+
+                return $marker;
+            })
+            ->toArray();
+    }
+
+    public function addMarker(Marker $marker): self
+    {
+        $this->markers[] = $marker->toArray();
+
+        return $this;
+    }
+
+    public function removeMarker(string $id): self
+    {
+        $this->markers = collect($this->markers)
+            ->filter(fn($marker) => $marker['id'] !== $id)
+            ->toArray();
+
+        return $this;
+    }
+
+    public function updateMarker(Marker $marker): self
+    {
+        $this->markers = collect($this->markers)
+            ->map(fn($m) => $m['id'] === $marker->getName() ? $marker->toArray() : $m)
+            ->toArray();
+
+        return $this;
+    }
+
+    public function getMarkers(): array
+    {
+        return $this->markers;
+    }
+
+    abstract public function markers(): array;
 
     public function height(string $height): self
     {

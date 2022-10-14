@@ -4,8 +4,9 @@ namespace Webbingbrasil\FilamentMaps;
 
 use Closure;
 use Filament\Support\Concerns\EvaluatesClosures;
+use Illuminate\Contracts\Support\Arrayable;
 
-class Marker
+class Marker implements Arrayable
 {
     use EvaluatesClosures;
 
@@ -93,5 +94,16 @@ class Marker
     public function getCallback(): ?string
     {
         return $this->evaluate($this->callback);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getName(),
+            'lat' => $this->getLat(),
+            'lng' => $this->getLng(),
+            'popup' => $this->getPopup(),
+            'callback' => $this->getCallback(),
+        ];
     }
 }

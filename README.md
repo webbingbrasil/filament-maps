@@ -26,7 +26,7 @@ class Map extends MapWidget
     
     protected bool $hasBorder = false;
 
-    public function getMarkers(): array
+    public function markers(): array
     {
         return [
             Marker::make('pos2')->lat(-15.7942)->lng(-47.8822)->popup('Hello Brasilia!'),
@@ -43,29 +43,57 @@ class Map extends MapWidget
 }
 ```
 
-### Tile Layers
-
-The map uses OpenStreetMap tiles by default, but you can change it to use any other provider using `getTileLayerUrl()` method or `$tileLayerUrl` propert:
-
-```php
-protected string $tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-```
-
-Also update the attribution information using `getTileLayerOptions()` method or `$tileLayerOptions` property:
-
-```php
-protected array $tileLayerOptions = [
-    'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-];
-```
-
-### Map Options
+## Map Options
 
 You can pass to widget any options available on Leaftlet map constructor. See [Leaflet documentation](https://leafletjs.com/reference.html#map-option) for more details.
 
 ```php
 protected array $mapOptions = ['center' => [0, 0], 'zoom' => 2];
 ```
+
+## Tile Layers
+
+The map uses OpenStreetMap tiles by default, but you can change it to use any other provider using `getTileLayerUrl()` method or `$tileLayerUrl` property:
+
+```php
+protected string | array $tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+protected array $tileLayerOptions = [
+    'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+];
+```
+
+### Multiple Tile Layers
+
+You can also use multiple tile layers:
+
+```php
+protected array $tileLayerUrl = [
+    'OpenStreetMap' => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    'OpenTopoMap' => 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+];
+
+protected array $tileLayerOptions = [
+    'OpenStreetMap' => [
+        'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+    ],
+    'OpenTopoMap' => [
+        'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, SRTM | Map style © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+    ],
+];
+```
+
+And use a action to change the tile layer:
+
+```php
+Actions\Action::make('mode')
+                ->icon('filamentmapsicon-o-square-3-stack-3d')
+                ->callback('setTileLayer(mode === "OpenStreetMap" ? "OpenTopoMap" : "OpenStreetMap")'),
+```
+
+### Dark Mode
+
+If you want to use a dark mode tile layer, you can use the `HasDarkModeTiles` trait. This trait will automatically set two tiles layers and listen Filament `dark-mode-toggled` event. You can change the default tile layers using the `$lightModeTileLayerUrl` and `$darkModeTileLayerUrl` properties.
 
 ## Actions
 
@@ -98,6 +126,8 @@ You can also center the map on user position:
 
 You can create your own actions using `Webbingbrasil\FilamentMaps\Actions\Action`.
 
+For example, a action to add new markers:
+
 ```php
 use Webbingbrasil\FilamentMaps\Actions;
 
@@ -125,9 +155,18 @@ Actions\Action::make('form')
         })
 ```
 
+In this example we use `addMarker()` method to add a new marker dynamically. You can also use `removeMarker()` and `updateMarker()` methods.
+
+```php
+$liveWire->removeMarker('marker-name');
+$liveWire->updateMarker(Marker::make('marker-name')->lat(...)->lng(...));
+```
+
+> Note: Markers need to have a unique name. If you try to add a marker with the same name as an existing one, the existing one will be replaced.
+
 #### Using JS Callback
 
-This approach is useful if you want to use a custom javascript to manipulate the map:
+This approach is useful if you want to use a custom javascript to manipulate the map without using Livewire.
 
 ```php
 Actions\Action::make('center')

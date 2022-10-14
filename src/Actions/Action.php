@@ -7,6 +7,7 @@ use Filament\Pages\Actions\Modal\Actions\Action as ModalAction;
 use Filament\Support\Actions\Action as BaseAction;
 use Filament\Support\Actions\Concerns;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Webbingbrasil\FilamentMaps\Actions\Concerns\HasCallback;
 use Webbingbrasil\FilamentMaps\Actions\Concerns\BelongsToLivewire;
 
@@ -69,11 +70,8 @@ class Action extends BaseAction
         return $this->position;
     }
 
-    public function getOptions(): array
+    public function getMapActionId(): string
     {
-        return [
-            'id' => $this->getName(),
-            'position' => $this->getPosition(),
-        ];
+        return Str::afterLast($this->getLivewire()->getName(), '.') . '.' . $this->getName();
     }
 }

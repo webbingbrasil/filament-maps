@@ -26,7 +26,7 @@ class Map extends MapWidget
     
     protected bool $hasBorder = false;
 
-    public function markers(): array
+    public function getMarkers(): array
     {
         return [
             Marker::make('pos2')->lat(-15.7942)->lng(-47.8822)->popup('Hello Brasilia!'),

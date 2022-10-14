@@ -58,7 +58,7 @@ protected array $mapOptions = ['center' => [0, 0], 'zoom' => 2];
 
 ## Tile Layers
 
-The map uses OpenStreetMap tiles by default, but you can change it to use any other provider using `getTileLayerUrl()` method or `$tileLayerUrl` property:
+The map uses OpenStreetMap tiles by default, but you can change it to use any other provider using `$tileLayerUrl` property:
 
 ```php
 protected string | array $tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -73,7 +73,7 @@ protected array $tileLayerOptions = [
 You can also use multiple tile layers:
 
 ```php
-protected array $tileLayerUrl = [
+protected string | array  $tileLayerUrl = [
     'OpenStreetMap' => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     'OpenTopoMap' => 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
 ];

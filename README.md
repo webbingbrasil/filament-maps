@@ -5,6 +5,11 @@
 
 Render map widgets using [Leaflet](https://leafletjs.com/).
 
+- Support for multiple maps on the same page
+- Two actions built-in: `CenterMapAction` and `ZoomAction`
+- Add Filament Actions directly on the as map control buttons
+- Multiple layers support. A DarkModeTile layer is included.
+
 ## Installation
 
 ```bash

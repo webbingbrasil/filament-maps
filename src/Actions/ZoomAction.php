@@ -12,7 +12,7 @@ class ZoomAction extends Action
 {
     protected string $view = 'filament-maps::zoom-action';
 
-    protected int $step = 1;
+    protected int $zoom = 1;
     protected string $type = '+';
 
     protected function setUp(): void
@@ -26,7 +26,7 @@ class ZoomAction extends Action
     {
         return $this->callback(function () {
             return <<<JS
-                () => { map.setZoom(map.getZoom() + $this->step); }
+                () => { map.setZoom(map.getZoom() + $this->zoom); }
             JS;
         });
     }
@@ -35,14 +35,14 @@ class ZoomAction extends Action
     {
         return $this->callback(function () {
             return <<<JS
-                () => { map.setZoom(map.getZoom() - $this->step); }
+                () => { map.setZoom(map.getZoom() - $this->zoom); }
             JS;
         });
     }
 
-    public function step(int $step): static
+    public function zoom(int $zoom): static
     {
-        $this->step = $step;
+        $this->zoom = $zoom;
 
         return $this;
     }

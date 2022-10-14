@@ -104,6 +104,14 @@ If you want to use a dark mode tile layer, you can use the `HasDarkModeTiles` tr
 
 You can add actions to the map widget. Actions are buttons that can be clicked to perform an action using a JS callback. You can create your own actions or use the ones provided by the package.
 
+### Zoom Action
+
+The `ZoomAction` action will add a button to the map that will zoom in or out the map. You can set the zoom level using the `zoom()` method:
+
+```php
+Actions\ZoomAction::make()->zoom(2), // Zoom in/out 2 levels
+```
+
 ### Center Map Action
 
 This action will center the map on a specific position.

@@ -138,6 +138,7 @@ trait HasActions
         $this->cachedActions = [];
 
         foreach ($actions as $index => $action) {
+            /** @var Action $action */
             $action->livewire($this);
 
             $this->cachedActions[$action->getName()] = $action;
@@ -211,9 +212,6 @@ trait HasActions
         return null;
     }
 
-    /**
-     * @deprecated Extend getActions() in your widget class instead.
-     */
     public function actions(array | Closure $actions): self
     {
         $this->actions = $actions;

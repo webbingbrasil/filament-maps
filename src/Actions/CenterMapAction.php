@@ -70,28 +70,26 @@ class CenterMapAction extends Action
         $latlng = json_encode($this->centerTo);
 
         return <<<JS
-            () => { map.setView($latlng, $zoom) }
+            map.setView($latlng, $zoom)
         JS;
     }
 
     protected function getCenterOnUserPositionAction(): string
     {
         return <<<JS
-            () => {
-                removeMarker('userPosition');
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        if (position.coords.latitude && position.coords.longitude) {
-                            addMarker(
-                                'userPosition',
-                                position.coords.latitude,
-                                position.coords.longitude,
-                                '{$this->userPositionLabel}'
-                            );
-                            map.setView([position.coords.latitude, position.coords.longitude], $this->zoom);
-                        }
-                    });
-                }
+            removeMarker('userPosition');
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    if (position.coords.latitude && position.coords.longitude) {
+                        addMarker(
+                            'userPosition',
+                            position.coords.latitude,
+                            position.coords.longitude,
+                            '{$this->userPositionLabel}'
+                        );
+                        map.setView([position.coords.latitude, position.coords.longitude], $this->zoom);
+                    }
+                });
             }
         JS;
     }

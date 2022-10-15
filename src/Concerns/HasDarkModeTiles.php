@@ -30,4 +30,18 @@ trait HasDarkModeTiles
 
         $this->tileLayerMode = 'light';
     }
+
+    public function lightModeTileLayerUrl(string $url): static
+    {
+        $this->lightModeTileLayerUrl = $url;
+
+        return $this;
+    }
+
+    public function darkModeTileLayerUrl(string $url): static
+    {
+        $this->darkModeTileLayerUrl = $url;
+
+        return $this;
+    }
 }

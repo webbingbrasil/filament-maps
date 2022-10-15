@@ -38,7 +38,7 @@
 
                 markersData: @entangle('markers'),
 
-                polylinesData: @entangle('polyLines'),
+                polylinesData: @entangle('polylines'),
 
                 init: function () {
                     if (window.filamentMaps['{{ $this->getName() }}']) {
@@ -51,6 +51,7 @@
                     @foreach((array) $tileLayerUrl as $mode => $url)
                     this.tileLayers['{{ $mode }}'] = L.tileLayer('{{ $url }}', {{ json_encode($tileLayerOptions[$mode] ?? $tileLayerOptions) }});
                     @endforeach
+
                     let initialMode = '{{ $this->getTileLayerMode() }}';
                     if (
                         document.documentElement.classList.contains('dark') &&
@@ -68,6 +69,7 @@
                     $watch('polylinesData', (polylines) => {
                         this.updatePolylines(polylines);
                     });
+
                     @foreach($actions as $action)
                         this.addAction('{{ $action->getMapActionId()  }}', '{{ $action->getPosition() }}');
                     @endforeach
@@ -87,7 +89,7 @@
                 updateMarkers: function (markers) {
                     if (this.map) {
                         markers.forEach(function (marker) {
-                            this.addMarker(marker.id, marker.lat, marker.lng, marker.info, marker.callback);
+                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.callback);
                         }.bind(this));
                     }
                 },
@@ -98,46 +100,46 @@
                         }.bind(this));
                     }
                 },
-                addAction(id, position) {
+                addAction: function (id, position) {
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
                 },
-                addMarker(id, lat, lng, info, callback) {
+                addMarker: function (id, lat, lng, popup, callback) {
                     this.removeMarker(id);
                     const mMarker = L.marker([lat, lng]).addTo(this.map);
-                    if (info) {
-                        mMarker.bindPopup(info);
+                    if (popup) {
+                        mMarker.bindPopup(popup);
                     }
                     if (callback) {
-                        mMarker.on('click', callback);
+                        mMarker.on('click', new Function('var map = this.map; ' + callback).bind(this));
                     }
                     this.markers.push({id, marker: mMarker});
                 },
-                addPolyline(id, latlngs, options) {
+                addPolyline: function (id, latlngs, options) {
                     this.removePolyline(id);
                     const pPolyline = L.polyline(latlngs, options).addTo(this.map);
 
                     this.polylines.push({id, polyline: pPolyline});
                 },
-                removeMarker(id) {
+                removeMarker: function (id) {
                     const m = this.markers.find(m => m.id === id);
                     if (m) {
                         m.marker.remove();
                         this.markers = this.markers.filter(m => m.id !== id);
                     }
                 },
-                removePolyline(id) {
+                removePolyline: function (id) {
                     const m = this.polylines.find(m => m.id === id);
                     if (m) {
                         m.polyline.remove();
                         this.polylines = this.polylines.filter(m => m.id !== id);
                     }
                 },
-                removeAllMarkers() {
+                removeAllMarkers: function () {
                     this.markers.forEach(({marker}) => marker.remove());
                     this.markers = [];
                 },
-                removeAllPolylines() {
+                removeAllPolylines: function () {
                     this.polylines.forEach(({polyline}) => polyline.remove());
                     this.polylines = [];
                 },

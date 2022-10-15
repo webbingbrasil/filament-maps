@@ -48,25 +48,62 @@ class Map extends MapWidget
 }
 ```
 
-## Map Options
+## Map Configuration
 
-You can pass to widget any options available on Leaftlet map constructor. See [Leaflet documentation](https://leafletjs.com/reference.html#map-option) for more details.
+For some configuration its possible to use properties:
+
+- `$mapOptions`: array with options available on Leaftlet. See [Leaflet documentation](https://leafletjs.com/reference.html#map-option) for more details.
+- `$tileLayerUrl`: string or array with tile layer url`s. Default to [OpenStreetMap](https://www.openstreetmap.org/).
+- `$hasBorder`: show a border around the map. Default is `true`.
+- `$rounded`: show a rounded border around the map. Default is `true`.
+- `$height`: height of the map. Default is `400px`.
+- `$heading`: set the heading of the map.
+- `$footer`: set the footer of the map.
+
+But you can also use the `setUp` method if you need more control:
 
 ```php
-protected array $mapOptions = ['center' => [0, 0], 'zoom' => 2];
+public function setUp(): void
+{
+    $this
+        ->height(..)
+        ->rounded(..)
+        ->mapOptions(..)
+        ->tileLayerUrl(...)
+        ->markers([
+            ...
+        ])
+        ->actions([
+            ..
+        ]);
+}
 ```
+
+> The `setUp` method is called on boot of the widget. See [livewire lifecycle hooks](https://laravel-livewire.com/docs/2.x/lifecycle-hooks) for more information.
+
+### Global Configuration
+
+If you want to set a default configuration for all instances of the map widget, you can use the `configureUsing` method in a service provider:
+
+```php
+MyMap::configureUsing(function (ResellerMap $widget) {
+    $widget->mapMarkers([
+        Marker::make('id')
+            ->lat(51.505)
+            ->lng(-0.09)
+            ->popup('I am a popup'),
+    ])
+    ->tileLayerUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+    ->tileLayerOptions([
+        'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+    ])
+});
+```
+
 
 ## Tile Layers
 
-The map uses OpenStreetMap tiles by default, but you can change it to use any other provider using `$tileLayerUrl` property:
-
-```php
-protected string | array $tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-protected array $tileLayerOptions = [
-    'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-];
-```
+The map uses OpenStreetMap tiles by default, but you can change it to use any other provider using `$tileLayerUrl` property or `tileLayerUrl` method. It's recommended to also use the `tileLayerOptions` to set correct attributions.
 
 ### Multiple Tile Layers
 
@@ -88,7 +125,7 @@ protected array $tileLayerOptions = [
 ];
 ```
 
-And use a action to change the tile layer:
+And you can use a action to change the tile layer:
 
 ```php
 Actions\Action::make('mode')
@@ -130,7 +167,7 @@ public function getActions(): array
 You can also center the map on user position:
 
 ```php
-    Actions\UserPositionAction::make()->centerOnUserPosition()->zoom(13)
+Actions\UserPositionAction::make()->centerOnUserPosition()->zoom(13)
 ```
 
 > Note: The center on user position feature will only work if the user browser supports [Navigator.geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation). Also, the user must be on a secure context (HTTPS) and needs to allow access to the location.
@@ -184,7 +221,7 @@ This approach is useful if you want to use a custom javascript to manipulate the
 ```php
 Actions\Action::make('center')
     ->callback(<<<JS
-        () => { map.setView([0,0], 2) }
+        map.setView([0,0], 2)
     JS)
 ```
 
@@ -210,7 +247,6 @@ You can set the icon of the action using `icon()` method:
 Actions\Action::make()->icon('heroicon-o-home')
 ```
 
-
 ## Markers
 
 You can add markers to the map widget. Markers are points on the map that can be clicked to open a info popup or execute a JS callback.
@@ -228,9 +264,7 @@ $this
             ->lat(51.505)
             ->lng(-0.09)
             ->callback(<<<JS
-                () => {
-                    alert('Hello World!');
-                }
+                alert('Hello World!');
             JS),
     ])
 }
@@ -308,15 +342,6 @@ $livewire->addPolyline(Polyline::make('line-name')->latlngs([...])->options([..]
 $livewire->removePolyline('line-name');
 $livewire->updatePolyline(Polyline::make('line-name')->latlngs([...])->options([...]));
 ```
-## Widget Customization
-
-You can customize the widget using the following properties:
-
-- `$hasBorder`: set to `true` to show a border around the map. Default is `true`.
-- `$rounded`: set to `true` to show a rounded border around the map. Default is `true`.
-- `$height`: set the height of the map. Default is `400px`.
-- `$heading`: set the heading of the map.
-- `$footer`: set the footer of the map.
 
 ## Images
 

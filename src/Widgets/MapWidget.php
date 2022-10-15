@@ -13,6 +13,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Htmlable;
 use Webbingbrasil\FilamentMaps\Concerns\HasActions;
 use Webbingbrasil\FilamentMaps\Concerns\HasMapOptions;
+use Webbingbrasil\FilamentMaps\Concerns\HasPolylines;
 use Webbingbrasil\FilamentMaps\Concerns\HasTileLayer;
 use Webbingbrasil\FilamentMaps\Marker;
 
@@ -24,6 +25,7 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
     use HasTileLayer;
     use HasActions;
     use HasMapOptions;
+    use HasPolylines;
     use Configurable {
         configure as protected baseConfigure;
     }
@@ -50,6 +52,7 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
     public function configure(): static
     {
         $this->markers = $this->prepareMapData($this->getMarkers());
+        $this->polyLines = $this->prepareMapData($this->getPolylines());
 
         return $this->baseConfigure();
     }

@@ -6,6 +6,7 @@
     ],
     'height' => '400px',
     'options' => [],
+    'polylines' => [],
     'actions' => [],
     'extraAttributeBag' => '',
     'extraAlpineAttributeBag' => '',
@@ -31,9 +32,13 @@
 
                 markers: [],
 
+                polylines: [],
+
                 tileLayers: {},
 
                 markersData: @entangle('markers'),
+
+                polylinesData: @entangle('polyLines'),
 
                 init: function () {
                     if (window.filamentMaps['{{ $this->getName() }}']) {
@@ -57,8 +62,12 @@
                     this.setTileLayer(initialMode);
 
                     this.updateMarkers(this.markersData);
+                    this.updatePolylines(this.polylinesData);
                     $watch('markersData', (markers) => {
                         this.updateMarkers(markers);
+                    });
+                    $watch('polylinesData', (polylines) => {
+                        this.updatePolylines(polylines);
                     });
 
                     @foreach($actions as $action)
@@ -84,6 +93,13 @@
                         }.bind(this));
                     }
                 },
+                updatePolylines: function (polyline) {
+                    if (this.map) {
+                        polyline.forEach(function (polyline) {
+                            this.addPolyline(polyline.id, polyline.latlngs, polyline.options);
+                        }.bind(this));
+                    }
+                },
                 addAction: function (id, position) {
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
@@ -99,6 +115,12 @@
                     }
                     this.markers.push({id, marker: mMarker});
                 },
+                addPolyline: function (id, latlngs, options) {
+                    this.removePolyline(id);
+                    const pPolyline = L.polyline(latlngs, options).addTo(this.map);
+
+                    this.polylines.push({id, polyline: pPolyline});
+                },
                 removeMarker: function (id) {
                     const m = this.markers.find(m => m.id === id);
                     if (m) {
@@ -106,9 +128,20 @@
                         this.markers = this.markers.filter(m => m.id !== id);
                     }
                 },
+                removePolyline: function (id) {
+                    const m = this.polylines.find(m => m.id === id);
+                    if (m) {
+                        m.polyline.remove();
+                        this.polylines = this.polylines.filter(m => m.id !== id);
+                    }
+                },
                 removeAllMarkers: function () {
                     this.markers.forEach(({marker}) => marker.remove());
                     this.markers = [];
+                },
+                removeAllPolylines: function () {
+                    this.polylines.forEach(({polyline}) => polyline.remove());
+                    this.polylines = [];
                 },
             }"
             {{ $extraAlpineAttributeBag }}

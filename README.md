@@ -107,7 +107,7 @@ The map uses OpenStreetMap tiles by default, but you can change it to use any ot
 
 ### Multiple Tile Layers
 
-You can also use multiple tile layers, justo set an array of urls:
+You can also use multiple tile layers:
 
 ```php
 protected string | array  $tileLayerUrl = [
@@ -270,7 +270,78 @@ $this
 }
 ```
 
->Use `map` to access the Leaflet instance on your marker callback
+>Use `map` to access the Leaflet instance on your action callback.
+
+## Polylines
+
+You can add polylines to the map widget. Polylines are lines on the map drawn on the map between two lat/lng points.
+If your have multiple polylines, each polyline must have an unique name.
+
+```php
+public function getPolylines(): array
+{
+    return [
+        Polyline::make('line1')->latlngs([
+            [45.51, -122.68],
+            [37.77, -122.43],
+            [34.04, -118.2]
+        ])->options(['color' => 'blue', 'weight' => 5])
+    ];
+}
+```
+
+You can use options listed at [Leaflet Polyline options](https://leafletjs.com/reference.html#polyline)
+
+### Polylines actions
+
+You can use actions as described above to manipulate polylines:
+
+```php
+Actions\Action::make('add line')
+    ->tooltip('Add line')
+    ->icon('filamentmapsicon-o-map-pin')
+    ->form([
+        Forms\Components\TextInput::make('name')
+            ->label('Name')
+            ->required(),
+        Forms\Components\Section::make('Start')
+            ->schema([
+                Forms\Components\TextInput::make('lat1')
+                    ->label('Latitude')
+                    ->required(),
+                Forms\Components\TextInput::make('lng1')
+                    ->label('Longitude')
+                    ->required(),
+            ]),
+        Forms\Components\Section::make('End')
+            ->schema([
+                Forms\Components\TextInput::make('lat2')
+                    ->label('Latitude')
+                    ->required(),
+                Forms\Components\TextInput::make('lng2')
+                    ->label('Longitude')
+                    ->required(),
+            ]),
+    ])
+    ->action(function (array $data, self $livewire) {
+        $livewire
+            ->addPolyline(
+                Polyline::make(Str::camel($data['name']))
+                    ->latlngs([
+                        [$data['lat1'], $data['lng1']],
+                        [$data['lat2'], $data['lng2']]
+                    ])
+            );
+    })
+```
+
+In this example we use `addPolyline()` method to add a new polyline dynamically. You can also use `removePolyline()` and `updatePolyline()` methods.
+
+```php
+$livewire->addPolyline(Polyline::make('line-name')->latlngs([...])->options([..]));
+$livewire->removePolyline('line-name');
+$livewire->updatePolyline(Polyline::make('line-name')->latlngs([...])->options([...]));
+```
 
 ## Images
 

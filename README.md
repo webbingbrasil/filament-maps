@@ -221,7 +221,7 @@ This approach is useful if you want to use a custom javascript to manipulate the
 ```php
 Actions\Action::make('center')
     ->callback(<<<JS
-        () => { map.setView([0,0], 2) }
+        map.setView([0,0], 2)
     JS)
 ```
 
@@ -264,15 +264,13 @@ $this
             ->lat(51.505)
             ->lng(-0.09)
             ->callback(<<<JS
-                () => {
-                    alert('Hello World!');
-                }
+                alert('Hello World!');
             JS),
     ])
 }
 ```
 
->Use `map` to access the Leaflet instance on your action callback.
+>Use `map` to access the Leaflet instance on your marker callback
 
 ## Images
 

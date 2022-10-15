@@ -80,33 +80,33 @@
                 updateMarkers: function (markers) {
                     if (this.map) {
                         markers.forEach(function (marker) {
-                            this.addMarker(marker.id, marker.lat, marker.lng, marker.info, marker.callback);
+                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.callback);
                         }.bind(this));
                     }
                 },
-                addAction(id, position) {
+                addAction: function (id, position) {
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
                 },
-                addMarker(id, lat, lng, info, callback) {
+                addMarker: function (id, lat, lng, popup, callback) {
                     this.removeMarker(id);
                     const mMarker = L.marker([lat, lng]).addTo(this.map);
-                    if (info) {
-                        mMarker.bindPopup(info);
+                    if (popup) {
+                        mMarker.bindPopup(popup);
                     }
                     if (callback) {
-                        mMarker.on('click', callback);
+                        mMarker.on('click', new Function('var map = this.map; ' + callback).bind(this));
                     }
                     this.markers.push({id, marker: mMarker});
                 },
-                removeMarker(id) {
+                removeMarker: function (id) {
                     const m = this.markers.find(m => m.id === id);
                     if (m) {
                         m.marker.remove();
                         this.markers = this.markers.filter(m => m.id !== id);
                     }
                 },
-                removeAllMarkers() {
+                removeAllMarkers: function () {
                     this.markers.forEach(({marker}) => marker.remove());
                     this.markers = [];
                 },

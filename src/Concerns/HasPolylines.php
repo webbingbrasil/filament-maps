@@ -6,11 +6,11 @@ use Webbingbrasil\FilamentMaps\Polyline;
 
 trait HasPolylines
 {
-    public array $polyLines = [];
+    public array $polylines = [];
 
     public function configurePolylines(): self
     {
-        $this->polyLines = $this->preparePolylines($this->getPolylines());
+        $this->polylines = $this->preparePolylines($this->getPolylines());
 
         return $this;
     }
@@ -30,14 +30,14 @@ trait HasPolylines
 
     public function addPolyline(Polyline $polyline): self
     {
-        $this->polyLines[] = $polyline->toArray();
+        $this->polylines[] = $polyline->toArray();
 
         return $this;
     }
 
     public function removePolyline(string $id): self
     {
-        $this->polyLines = collect($this->polyLines)
+        $this->polylines = collect($this->polylines)
             ->filter(fn($polyline) => $polyline['id'] !== $id)
             ->toArray();
 
@@ -46,7 +46,7 @@ trait HasPolylines
 
     public function updatePolyline(Polyline $polyline): self
     {
-        $this->polyLines = collect($this->polyLines)
+        $this->polylines = collect($this->polylines)
             ->map(fn($m) => $m['id'] === $polyline->getName() ? $polyline->toArray() : $m)
             ->toArray();
 
@@ -60,7 +60,7 @@ trait HasPolylines
 
     public function mapPolylines(array $polylines): self
     {
-        $this->polyLines = $this->preparePolylines($polylines);
+        $this->polylines = $this->preparePolylines($polylines);
 
         return $this;
     }

@@ -55,10 +55,6 @@ class Action extends BaseAction
                 'record',
                 fn (): ?Model => $this->getRecord(),
             ),
-            'markers' => $this->resolveEvaluationParameter(
-                'markers',
-                fn (): array => $this->evaluate(fn ($livewire) => $livewire->markers, exceptParameters: ['markers', 'record']),
-            ),
         ]);
     }
 

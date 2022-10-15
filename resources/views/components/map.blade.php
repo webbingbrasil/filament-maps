@@ -38,7 +38,7 @@
 
                 markersData: @entangle('markers'),
 
-                polylinesData: @entangle('polyLines'),
+                polylinesData: @entangle('polylines'),
 
                 init: function () {
                     if (window.filamentMaps['{{ $this->getName() }}']) {

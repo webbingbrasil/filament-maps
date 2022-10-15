@@ -8,6 +8,26 @@ trait HasPolylines
 {
     public array $polyLines = [];
 
+    public function configurePolylines(): self
+    {
+        $this->polyLines = $this->preparePolylines($this->getPolylines());
+
+        return $this;
+    }
+
+    protected function preparePolylines(array $data): array
+    {
+        return collect($data)
+            ->map(function (array | Polyline $item) {
+                if ($item instanceof Polyline) {
+                    return $item->toArray();
+                }
+
+                return $item;
+            })
+            ->toArray();
+    }
+
     public function addPolyline(Polyline $polyline): self
     {
         $this->polyLines[] = $polyline->toArray();
@@ -32,8 +52,16 @@ trait HasPolylines
 
         return $this;
     }
+
     public function getPolylines(): array
     {
         return [];
+    }
+
+    public function mapPolylines(array $polylines): self
+    {
+        $this->polyLines = $this->preparePolylines($polylines);
+
+        return $this;
     }
 }

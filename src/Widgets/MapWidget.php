@@ -11,8 +11,10 @@ use Filament\Widgets\Widget;
 use Illuminate\Contracts\Support\Htmlable;
 use Webbingbrasil\FilamentMaps\Concerns\HasActions;
 use Webbingbrasil\FilamentMaps\Concerns\HasMapOptions;
+use Webbingbrasil\FilamentMaps\Concerns\HasPolylines;
 use Webbingbrasil\FilamentMaps\Concerns\HasTileLayer;
 use Webbingbrasil\FilamentMaps\Marker;
+use Webbingbrasil\FilamentMaps\Polyline;
 
 abstract class MapWidget extends Widget implements HasForms, RendersFormComponentActionModal
 {
@@ -22,7 +24,7 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
     use HasTileLayer;
     use HasActions;
     use HasMapOptions;
-
+    use HasPolylines;
     protected static string $view = 'filament-maps::widgets.map';
 
     protected string $height = '400px';
@@ -46,6 +48,16 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
                 }
 
                 return $marker;
+            })
+            ->toArray();
+
+        $this->polyLines = collect($this->getPolylines())
+            ->map(function (array | Polyline $polyline) {
+                if ($polyline instanceof Polyline) {
+                    return $polyline->toArray();
+                }
+
+                return $polyline;
             })
             ->toArray();
     }

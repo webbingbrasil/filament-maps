@@ -3,11 +3,13 @@
 namespace Webbingbrasil\FilamentMaps\Widgets;
 
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Concerns\Configurable;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Support\Concerns\HasExtraAlpineAttributes;
 use Filament\Support\Concerns\HasExtraAttributes;
 use Filament\Tables\Contracts\RendersFormComponentActionModal;
 use Filament\Widgets\Widget;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Htmlable;
 use Webbingbrasil\FilamentMaps\Concerns\HasActions;
 use Webbingbrasil\FilamentMaps\Concerns\HasMapOptions;
@@ -22,6 +24,9 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
     use HasTileLayer;
     use HasActions;
     use HasMapOptions;
+    use Configurable {
+        configure as protected baseConfigure;
+    }
 
     protected static string $view = 'filament-maps::widgets.map';
 
@@ -37,15 +42,27 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
 
     public array $markers = [];
 
-    public function mount()
+    public function boot()
     {
-        $this->markers = collect($this->getMarkers())
-            ->map(function (array | Marker $marker) {
-                if ($marker instanceof Marker) {
-                    return $marker->toArray();
+        $this->configure();
+    }
+
+    public function configure(): static
+    {
+        $this->markers = $this->prepareMapData($this->getMarkers());
+
+        return $this->baseConfigure();
+    }
+
+    protected function prepareMapData(array $data): array
+    {
+        return collect($data)
+            ->map(function (array | Arrayable $item) {
+                if ($item instanceof Arrayable) {
+                    return $item->toArray();
                 }
 
-                return $marker;
+                return $item;
             })
             ->toArray();
     }
@@ -80,20 +97,9 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
         return [];
     }
 
-    /**
-     * @deprecated Extend getMarkers() instead in your widget class and return an array of Marker instances.
-     */
     public function mapMarkers(array $markers): self
     {
-        $this->markers = collect($markers)
-            ->map(function (array | Marker $marker) {
-                if ($marker instanceof Marker) {
-                    return $marker->toArray();
-                }
-
-                return $marker;
-            })
-            ->toArray();
+        $this->markers = $this->prepareMapData($markers);
 
         return $this;
     }

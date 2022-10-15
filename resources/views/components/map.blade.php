@@ -6,6 +6,7 @@
     ],
     'height' => '400px',
     'options' => [],
+    'polylines' => [],
     'actions' => [],
     'extraAttributeBag' => '',
     'extraAlpineAttributeBag' => '',
@@ -31,9 +32,13 @@
 
                 markers: [],
 
+                polylines: [],
+
                 tileLayers: {},
 
                 markersData: @entangle('markers'),
+
+                polylinesData: @entangle('polyLines'),
 
                 init: function () {
                     if (window.filamentMaps['{{ $this->getName() }}']) {
@@ -46,7 +51,6 @@
                     @foreach((array) $tileLayerUrl as $mode => $url)
                     this.tileLayers['{{ $mode }}'] = L.tileLayer('{{ $url }}', {{ json_encode($tileLayerOptions[$mode] ?? $tileLayerOptions) }});
                     @endforeach
-
                     let initialMode = '{{ $this->getTileLayerMode() }}';
                     if (
                         document.documentElement.classList.contains('dark') &&
@@ -57,10 +61,13 @@
                     this.setTileLayer(initialMode);
 
                     this.updateMarkers(this.markersData);
+                    this.updatePolylines(this.polylinesData);
                     $watch('markersData', (markers) => {
                         this.updateMarkers(markers);
                     });
-
+                    $watch('polylinesData', (polylines) => {
+                        this.updatePolylines(polylines);
+                    });
                     @foreach($actions as $action)
                         this.addAction('{{ $action->getMapActionId()  }}', '{{ $action->getPosition() }}');
                     @endforeach
@@ -84,6 +91,13 @@
                         }.bind(this));
                     }
                 },
+                updatePolylines: function (polyline) {
+                    if (this.map) {
+                        polyline.forEach(function (polyline) {
+                            this.addPolyline(polyline.id, polyline.latlngs, polyline.options);
+                        }.bind(this));
+                    }
+                },
                 addAction(id, position) {
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
@@ -99,6 +113,12 @@
                     }
                     this.markers.push({id, marker: mMarker});
                 },
+                addPolyline(id, latlngs, options) {
+                    this.removePolyline(id);
+                    const pPolyline = L.polyline(latlngs, options).addTo(this.map);
+
+                    this.polylines.push({id, polyline: pPolyline});
+                },
                 removeMarker(id) {
                     const m = this.markers.find(m => m.id === id);
                     if (m) {
@@ -106,9 +126,20 @@
                         this.markers = this.markers.filter(m => m.id !== id);
                     }
                 },
+                removePolyline(id) {
+                    const m = this.polylines.find(m => m.id === id);
+                    if (m) {
+                        m.polyline.remove();
+                        this.polylines = this.polylines.filter(m => m.id !== id);
+                    }
+                },
                 removeAllMarkers() {
                     this.markers.forEach(({marker}) => marker.remove());
                     this.markers = [];
+                },
+                removeAllPolylines() {
+                    this.polylines.forEach(({polyline}) => polyline.remove());
+                    this.polylines = [];
                 },
             }"
             {{ $extraAlpineAttributeBag }}

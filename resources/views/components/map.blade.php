@@ -52,6 +52,22 @@
                     this.tileLayers['{{ $mode }}'] = L.tileLayer('{{ $url }}', {{ json_encode($tileLayerOptions[$mode] ?? $tileLayerOptions) }});
                     @endforeach
 
+                    @if(config('filament-maps.draw'))
+                        this.map.pm.addControls({
+                            position: 'topright',
+                            drawCircle: true,
+                            drawMarker: true,
+                            drawPolyline: true,
+                            drawRectangle: true,
+                            drawCircleMarker: true,
+                            drawPolygon: true,
+                            cutPolygon: true,
+                            editMode: true,
+                            dragMode: true,
+                            removalMode: true,
+                        });
+                    @endif
+
                     let initialMode = '{{ $this->getTileLayerMode() }}';
                     if (
                         document.documentElement.classList.contains('dark') &&

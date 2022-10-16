@@ -17,6 +17,7 @@ class FilamentMapsProvider extends PluginServiceProvider
     {
         $package
             ->name('filament-maps')
+            ->hasConfigFile()
             ->hasViews();
     }
 

@@ -5,18 +5,20 @@ namespace Webbingbrasil\FilamentMaps;
 use Closure;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Contracts\Support\Arrayable;
+use Webbingbrasil\FilamentMaps\Concerns\HasPopup;
+use Webbingbrasil\FilamentMaps\Concerns\HasTooltip;
 
 class Marker implements Arrayable
 {
     use EvaluatesClosures;
+    use HasPopup;
+    use HasTooltip;
 
     protected string $name;
 
     protected float | Closure $lat;
 
     protected float | Closure $lng;
-
-    protected string | Closure | null $popup = null;
 
     protected string | Closure | null $callback = '';
 
@@ -72,17 +74,6 @@ class Marker implements Arrayable
         return $this->evaluate($this->lng);
     }
 
-    public function popup(string| Closure | null $popup): static
-    {
-        $this->popup = $popup;
-
-        return $this;
-    }
-
-    public function getPopup(): ?string
-    {
-        return $this->evaluate($this->popup);
-    }
 
     public function callback(string | Closure | null  $callback): static
     {
@@ -103,6 +94,7 @@ class Marker implements Arrayable
             'lat' => $this->getLat(),
             'lng' => $this->getLng(),
             'popup' => $this->getPopup(),
+            'tooltip'=> $this->getTooltip(),
             'callback' => $this->getCallback(),
         ];
     }

@@ -79,7 +79,7 @@ public function setUp(): void
 }
 ```
 
-> The `setUp` method is called on boot of the widget. See [livewire lifecycle hooks](https://laravel-livewire.com/docs/2.x/lifecycle-hooks) for more information.
+> The `setUp` method is called on `mount` of the widget. See [livewire lifecycle hooks](https://laravel-livewire.com/docs/2.x/lifecycle-hooks) for more information.
 
 ### Global Configuration
 

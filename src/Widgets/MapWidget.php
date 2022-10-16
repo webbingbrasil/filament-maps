@@ -42,7 +42,7 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
 
     protected bool $rounded = true;
 
-    public function boot()
+    public function mount()
     {
         $this->configure();
     }

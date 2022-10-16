@@ -5,11 +5,16 @@ namespace Webbingbrasil\FilamentMaps;
 use Filament\Forms\Components\Concerns\HasOptions;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Contracts\Support\Arrayable;
+use Webbingbrasil\FilamentMaps\Concerns\HasPopup;
+use Webbingbrasil\FilamentMaps\Concerns\HasTooltip;
 
 class Polyline implements Arrayable
 {
     use EvaluatesClosures;
     use HasOptions;
+    use HasPopup;
+    use HasTooltip;
+
     protected string $name;
 
     protected array | Closure $latlngs;
@@ -60,6 +65,8 @@ class Polyline implements Arrayable
             'id' => $this->getName(),
             'latlngs' => $this->getLatlngs(),
             'options' => $this->getOptions(),
+            'popup' => $this->getPopup(),
+            'tooltip'=> $this->getTooltip(),
         ];
     }
 }

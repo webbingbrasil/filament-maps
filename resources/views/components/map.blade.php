@@ -62,10 +62,13 @@
                     this.setTileLayer(initialMode);
 
                     this.updateMarkers(this.markersData);
+
                     this.updatePolylines(this.polylinesData);
+
                     $watch('markersData', (markers) => {
                         this.updateMarkers(markers);
                     });
+
                     $watch('polylinesData', (polylines) => {
                         this.updatePolylines(polylines);
                     });
@@ -89,14 +92,14 @@
                 updateMarkers: function (markers) {
                     if (this.map) {
                         markers.forEach(function (marker) {
-                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.callback);
+                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.tooltip, marker.callback);
                         }.bind(this));
                     }
                 },
                 updatePolylines: function (polyline) {
                     if (this.map) {
                         polyline.forEach(function (polyline) {
-                            this.addPolyline(polyline.id, polyline.latlngs, polyline.options);
+                            this.addPolyline(polyline.id, polyline.latlngs, polyline.popup, polyline.tooltip, polyline.options);
                         }.bind(this));
                     }
                 },
@@ -104,21 +107,29 @@
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
                 },
-                addMarker: function (id, lat, lng, popup, callback) {
+                addMarker: function (id, lat, lng, popup, tooltip, callback) {
                     this.removeMarker(id);
                     const mMarker = L.marker([lat, lng]).addTo(this.map);
                     if (popup) {
                         mMarker.bindPopup(popup);
+                    }
+                    if (tooltip) {
+                        mMarker.bindTooltip(tooltip);
                     }
                     if (callback) {
                         mMarker.on('click', new Function('var map = this.map; ' + callback).bind(this));
                     }
                     this.markers.push({id, marker: mMarker});
                 },
-                addPolyline: function (id, latlngs, options) {
+                addPolyline: function (id, latlngs, popup, tooltip, options) {
                     this.removePolyline(id);
                     const pPolyline = L.polyline(latlngs, options).addTo(this.map);
-
+                    if (popup) {
+                        pPolyline.bindPopup(popup);
+                    }
+                    if (tooltip) {
+                        pPolyline.bindTooltip(tooltip);
+                    }
                     this.polylines.push({id, polyline: pPolyline});
                 },
                 removeMarker: function (id) {

@@ -91,7 +91,8 @@ MyMap::configureUsing(function (ResellerMap $widget) {
         Marker::make('id')
             ->lat(51.505)
             ->lng(-0.09)
-            ->popup('I am a popup'),
+            ->popup('I am a popup')
+            ->tooltip('I am a tooltip'),
     ])
     ->tileLayerUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
     ->tileLayerOptions([
@@ -263,6 +264,7 @@ $this
         Marker::make('id')
             ->lat(51.505)
             ->lng(-0.09)
+            ->tooltip('I am a tooltip')
             ->callback(<<<JS
                 alert('Hello World!');
             JS),
@@ -281,11 +283,14 @@ If your have multiple polylines, each polyline must have an unique name.
 public function getPolylines(): array
 {
     return [
-        Polyline::make('line1')->latlngs([
+        Polyline::make('line1')
+        ->latlngs([
             [45.51, -122.68],
             [37.77, -122.43],
             [34.04, -118.2]
         ])->options(['color' => 'blue', 'weight' => 5])
+        ->tooltip('I am a tooltip')
+        ->popup('I am a popup'),
     ];
 }
 ```

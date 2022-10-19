@@ -172,9 +172,11 @@
                 },
                 addMarker: function (id, lat, lng, popup, tooltip, icon, callback) {
                     this.removeMarker(id);
-                    const mMarker = L.marker([lat, lng], {
-                        icon: new L.Icon(icon)
-                    }).addTo(this.map);
+                    var options = {};
+                    if (icon) {
+                        options.icon = L.icon(icon);
+                    }
+                    const mMarker = L.marker([lat, lng], options).addTo(this.map);
                     if (popup) {
                         mMarker.bindPopup(popup);
                     }

@@ -283,7 +283,7 @@ If your have multiple polylines, each polyline must have an unique name.
 public function getPolylines(): array
 {
     return [
-        Polyline::make('line1')
+        Polyline::make('polyline')
         ->latlngs([
             [45.51, -122.68],
             [37.77, -122.43],
@@ -343,11 +343,93 @@ Actions\Action::make('add line')
 In this example we use `addPolyline()` method to add a new polyline dynamically. You can also use `removePolyline()` and `updatePolyline()` methods.
 
 ```php
-$livewire->addPolyline(Polyline::make('line-name')->latlngs([...])->options([..]));
-$livewire->removePolyline('line-name');
-$livewire->updatePolyline(Polyline::make('line-name')->latlngs([...])->options([...]));
+$livewire->addPolyline(Polyline::make('polyline-name')->latlngs([...])->options([..]));
+$livewire->removePolyline('polyline-name');
+$livewire->updatePolyline(Polyline::make('polyline-name')->latlngs([...])->options([...]));
+```
+## Polygones
+
+You can add polygones to the map widget. Polygones are lines on the map drawn on the map between two lat/lng points.
+If your have multiple polygones, each polygone must have an unique name.
+
+```php
+public function getPolylgones(): array
+{
+    return [
+        Polygone::make('polygone')
+        ->latlngs([
+            [45.51, -122.68],
+            [37.77, -122.43],
+            [34.04, -118.2]
+        ])->options(['color' => 'blue', 'weight' => 5])
+        ->tooltip('I am a tooltip')
+        ->popup('I am a popup'),
+    ];
+}
 ```
 
+You can use options listed at [Leaflet Polygone options](https://leafletjs.com/reference.html#polygone)
+
+### Polygones actions
+```php
+$livewire->addPolygone(Polygone::make('polygone-name')->latlngs([...])->options([..]));
+$livewire->removePolygone('polygone-name');
+$livewire->updatePolygone(Polygone::make('polygone-name')->latlngs([...])->options([...]));
+```
+## Rectangles
+
+You can add rectangles to the map widget.
+If your have multiple rectangles, each rectangle must have an unique name.
+
+```php
+public function getRectangles(): array
+{
+    return [
+            Rectangle::make('rectangle')
+                ->bounds([
+                    [54.559322, -5.767822],
+                    [56.1210604, -3.021240]
+                ])->tooltip('rectangle')
+                ->options(['color' => 'red'])
+    ];
+}
+```
+
+You can use options listed at [Leaflet Rectangle options](https://leafletjs.com/reference.html#rectangle)
+
+### Rectangles actions
+```php
+$livewire->addRectangle(Polygone::make('rectangle-name')->bounds([...])->options([..]));
+$livewire->removeRectangle('rectangle-name');
+$livewire->updateRectangle(Polygone::make('rectangle-name')->bounds([...])->options([...]));
+```
+## Circles
+
+You can add circles to the map widget.
+If your have multiple circles, each circle must have an unique name.
+
+```php
+public function getCircles(): array
+{
+    return [
+            Circle::make('circle')
+                ->lat(-15.7942)
+                ->lng(-47.8822)
+                ->options(['radius' => 200000])
+                ->popup('Hello Brasilia!')
+                ->tooltip('test2'),
+    ];
+}
+```
+
+You can use options listed at [Leaflet Circle options](https://leafletjs.com/reference.html#circle)
+
+### Rectangles actions
+```php
+$livewire->addCircle(Circle::make('circle-name')->lat(...)->lng(...)->options([..]));
+$livewire->removeCircle('circle-name');
+$livewire->updateCircle(Circle::make('circle-name')->lat(...)->lng(...)->options([...]));
+```
 ## Images
 
 ![Header & Footer](./docs/images/image-header-footer.png)

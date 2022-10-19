@@ -72,6 +72,7 @@
                     ) {
                         initialMode = 'dark';
                     }
+
                     this.setTileLayer(initialMode);
 
                     this.updateMarkers(this.markersData);
@@ -133,7 +134,7 @@
                         });
 
                         markers.forEach(function (marker) {
-                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.tooltip, marker.color, marker.callback);
+                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.tooltip, marker.icon, marker.callback);
                         }.bind(this));
                     }
                 },
@@ -169,17 +170,10 @@
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
                 },
-                addMarker: function (id, lat, lng, popup, tooltip, color, callback) {
+                addMarker: function (id, lat, lng, popup, tooltip, icon, callback) {
                     this.removeMarker(id);
                     const mMarker = L.marker([lat, lng], {
-                        icon: new L.Icon({
-                          iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + color + '.png',
-                          shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
-                          iconSize: [25, 41],
-                          iconAnchor: [12, 41],
-                          popupAnchor: [1, -34],
-                          shadowSize: [41, 41]
-                        })
+                        icon: new L.Icon(icon)
                     }).addTo(this.map);
                     if (popup) {
                         mMarker.bindPopup(popup);

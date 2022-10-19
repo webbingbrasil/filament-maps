@@ -183,7 +183,7 @@
                     this.polylines.push({id, polyline: pPolyline});
                 },
                 addPolygone: function (id, latlngs, popup, tooltip, options) {
-                    this.removePolyline(id);
+                    this.removePolygone(id);
                     const pPolygon = L.polygon(latlngs, options).addTo(this.map);
                     if (popup) {
                         pPolygon.bindPopup(popup);
@@ -230,10 +230,10 @@
                     }
                 },
                 removePolygone: function (id) {
-                    const p = this.polylines.find(p => p.id === id);
+                    const p = this.polygones.find(p => p.id === id);
                     if (p) {
-                        p.polyline.remove();
-                        this.polylines = this.polylines.filter(p => p.id !== id);
+                        p.polygones.remove();
+                        this.polygones = this.polygones.filter(p => p.id !== id);
                     }
                 },
                 removeRectangle: function (id) {

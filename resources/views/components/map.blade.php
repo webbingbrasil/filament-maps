@@ -36,6 +36,8 @@
 
                 tileLayers: {},
 
+                centerTo: @entangle('centerTo'),
+
                 markersData: @entangle('markers'),
 
                 polylinesData: @entangle('polylines'),
@@ -65,6 +67,10 @@
 
                     this.updatePolylines(this.polylinesData);
 
+                    $watch('centerTo', (center) => {
+                        this.map.setView(center.location, center.zoom);
+                    });
+
                     $watch('markersData', (markers) => {
                         this.updateMarkers(markers);
                     });
@@ -91,8 +97,14 @@
                 },
                 updateMarkers: function (markers) {
                     if (this.map) {
+                        this.markers.forEach((marker) => {
+                            if (! markers.find((m) => m.id == marker.id)) {
+                                this.removeMarker(marker.id);
+                            }
+                        });
+
                         markers.forEach(function (marker) {
-                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.tooltip, marker.callback);
+                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.tooltip, marker.color, marker.callback);
                         }.bind(this));
                     }
                 },
@@ -107,9 +119,18 @@
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
                 },
-                addMarker: function (id, lat, lng, popup, tooltip, callback) {
+                addMarker: function (id, lat, lng, popup, tooltip, color, callback) {
                     this.removeMarker(id);
-                    const mMarker = L.marker([lat, lng]).addTo(this.map);
+                    const mMarker = L.marker([lat, lng], {
+                        icon: new L.Icon({
+                          iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + color + '.png',
+                          shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+                          iconSize: [25, 41],
+                          iconAnchor: [12, 41],
+                          popupAnchor: [1, -34],
+                          shadowSize: [41, 41]
+                        })
+                    }).addTo(this.map);
                     if (popup) {
                         mMarker.bindPopup(popup);
                     }

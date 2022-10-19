@@ -41,6 +41,8 @@
 
                 tileLayers: {},
 
+                centerTo: @entangle('centerTo'),
+
                 markersData: @entangle('markers'),
 
                 polylinesData: @entangle('polylines'),
@@ -70,6 +72,7 @@
                     ) {
                         initialMode = 'dark';
                     }
+
                     this.setTileLayer(initialMode);
 
                     this.updateMarkers(this.markersData);
@@ -81,6 +84,10 @@
                     this.updateRectangles(this.rectanglesData);
 
                     this.updateCircles(this.circlesData);
+
+                    $watch('centerTo', (center) => {
+                        this.map.setView(center.location, center.zoom);
+                    });
 
                     $watch('markersData', (markers) => {
                         this.updateMarkers(markers);
@@ -120,8 +127,14 @@
                 },
                 updateMarkers: function (markers) {
                     if (this.map) {
+                        this.markers.forEach((marker) => {
+                            if (! markers.find((m) => m.id == marker.id)) {
+                                this.removeMarker(marker.id);
+                            }
+                        });
+
                         markers.forEach(function (marker) {
-                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.tooltip, marker.callback);
+                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.tooltip, marker.icon, marker.callback);
                         }.bind(this));
                     }
                 },
@@ -157,9 +170,11 @@
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
                 },
-                addMarker: function (id, lat, lng, popup, tooltip, callback) {
+                addMarker: function (id, lat, lng, popup, tooltip, icon, callback) {
                     this.removeMarker(id);
-                    const mMarker = L.marker([lat, lng]).addTo(this.map);
+                    const mMarker = L.marker([lat, lng], {
+                        icon: new L.Icon(icon)
+                    }).addTo(this.map);
                     if (popup) {
                         mMarker.bindPopup(popup);
                     }

@@ -3,6 +3,7 @@
 namespace Webbingbrasil\FilamentMaps;
 
 use Closure;
+use Exception;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Contracts\Support\Arrayable;
 use Webbingbrasil\FilamentMaps\Concerns\HasPopup;
@@ -14,6 +15,16 @@ class Marker implements Arrayable
     use HasPopup;
     use HasTooltip;
 
+    const COLOR_BLUE = 'blue';
+    const COLOR_GOLD = 'gold';
+    const COLOR_RED = 'red';
+    const COLOR_GREEN = 'green';
+    const COLOR_ORANGE = 'orange';
+    const COLOR_YELLOW = 'yellow';
+    const COLOR_VIOLET = 'violet';
+    const COLOR_GREY = 'grey';
+    const COLOR_BLACK = 'black';
+
     protected string $name;
 
     protected float | Closure $lat;
@@ -21,6 +32,8 @@ class Marker implements Arrayable
     protected float | Closure $lng;
 
     protected string | Closure | null $callback = '';
+
+    protected ?string $color = 'blue';
 
     final public function __construct(string $name)
     {
@@ -87,6 +100,18 @@ class Marker implements Arrayable
         return $this->evaluate($this->callback);
     }
 
+    public function color(string $color): static
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function getColor(): string
+    {
+        return $this->color;
+    }
+
     public function toArray(): array
     {
         return [
@@ -95,6 +120,7 @@ class Marker implements Arrayable
             'lng' => $this->getLng(),
             'popup' => $this->getPopup(),
             'tooltip'=> $this->getTooltip(),
+            'color' => $this->getColor(),
             'callback' => $this->getCallback(),
         ];
     }

@@ -202,16 +202,12 @@ Actions\Action::make('form')
                         ->lat($data['lat'])
                         ->lng($data['lng'])
                         ->popup($data['name'])
-                );
+                )
+                ->centerTo(location: [$data['lat'], $data['lng']], zoom: 13)
         })
 ```
 
-In this example we use `addMarker()` method to add a new marker dynamically. You can also use `removeMarker()` and `updateMarker()` methods.
-
-```php
-$liveWire->removeMarker('marker-name');
-$liveWire->updateMarker(Marker::make('marker-name')->lat(...)->lng(...));
-```
+In this example we use `addMarker()` method to add a new marker dynamically and `centerTo()` to set new map center and zoom level.
 
 > Note: Markers need to have a unique name. If you try to add a marker with the same name as an existing one, the existing one will be replaced.
 
@@ -273,6 +269,45 @@ $this
 ```
 
 >Use `map` to access the Leaflet instance on your action callback.
+ 
+### Marker Icon Color
+
+You can set the color of the marker icon using `color()` method:
+
+```php
+Marker::make('id')
+    ->color(Marker::COLOR_RED)
+```
+
+See the `Marker::COLOR_*` constants for all available colors. Default color is `Marker::COLOR_BLUE`.
+
+### Marker Custom Icon
+
+You can set a custom icon for the marker using `icon()` method:
+
+```php
+Marker::make('id')
+    ->icon(
+        string $iconUrl,
+        string $shadowUrl,
+        array $iconSize,
+        array $iconAnchor,
+        array $popupAnchor,
+        array $shadowSize
+    )
+```
+
+### Marker Actions
+
+You can use actions as described above to manipulate markers:
+
+```php
+$liveWire->mapMarkers(array $markers); // update the markers
+$livewire->addMarker(Marker $marker); // add a new marker
+$livewire->removeMarker(string $id); // remove a marker
+$livewire->updateMarker(string $id, Marker $marker); // update a marker
+```
+
 
 ## Polylines
 

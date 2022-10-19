@@ -11,9 +11,12 @@ use Filament\Tables\Contracts\RendersFormComponentActionModal;
 use Filament\Widgets\Widget;
 use Illuminate\Contracts\Support\Htmlable;
 use Webbingbrasil\FilamentMaps\Concerns\HasActions;
+use Webbingbrasil\FilamentMaps\Concerns\HasCircles;
 use Webbingbrasil\FilamentMaps\Concerns\HasMapOptions;
 use Webbingbrasil\FilamentMaps\Concerns\HasMarkers;
+use Webbingbrasil\FilamentMaps\Concerns\HasPolygones;
 use Webbingbrasil\FilamentMaps\Concerns\HasPolylines;
+use Webbingbrasil\FilamentMaps\Concerns\HasRectangles;
 use Webbingbrasil\FilamentMaps\Concerns\HasTileLayer;
 
 abstract class MapWidget extends Widget implements HasForms, RendersFormComponentActionModal
@@ -26,6 +29,10 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
     use HasMapOptions;
     use HasMarkers;
     use HasPolylines;
+    use HasPolygones;
+    use HasRectangles;
+    use HasCircles;
+
     use Configurable {
         configure as protected configureWidget;
     }
@@ -52,6 +59,9 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
         return $this
             ->configureMarkers()
             ->configurePolylines()
+            ->configurePolygones()
+            ->configureRectangles()
+            ->configureCircles()
             ->configureWidget();
     }
 

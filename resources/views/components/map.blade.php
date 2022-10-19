@@ -6,7 +6,6 @@
     ],
     'height' => '400px',
     'options' => [],
-    'polylines' => [],
     'actions' => [],
     'extraAttributeBag' => '',
     'extraAlpineAttributeBag' => '',
@@ -34,6 +33,12 @@
 
                 polylines: [],
 
+                polygones: [],
+
+                rectangles: [],
+
+                circles: [],
+
                 tileLayers: {},
 
                 centerTo: @entangle('centerTo'),
@@ -41,6 +46,12 @@
                 markersData: @entangle('markers'),
 
                 polylinesData: @entangle('polylines'),
+
+                polygonesData: @entangle('polygones'),
+
+                rectanglesData: @entangle('rectangles'),
+
+                circlesData: @entangle('circles'),
 
                 init: function () {
                     if (window.filamentMaps['{{ $this->getName() }}']) {
@@ -67,6 +78,12 @@
 
                     this.updatePolylines(this.polylinesData);
 
+                    this.updatePolygones(this.polygonesData);
+
+                    this.updateRectangles(this.rectanglesData);
+
+                    this.updateCircles(this.circlesData);
+
                     $watch('centerTo', (center) => {
                         this.map.setView(center.location, center.zoom);
                     });
@@ -77,6 +94,18 @@
 
                     $watch('polylinesData', (polylines) => {
                         this.updatePolylines(polylines);
+                    });
+
+                    $watch('polygonesData', (polygones) => {
+                        this.updatePolygones(polygones);
+                    });
+
+                    $watch('rectanglesData', (rectangles) => {
+                        this.updateRectangles(rectangles);
+                    });
+
+                    $watch('circlesData', (circles) => {
+                        this.updateCircles(circles);
                     });
 
                     @foreach($actions as $action)
@@ -112,6 +141,27 @@
                     if (this.map) {
                         polyline.forEach(function (polyline) {
                             this.addPolyline(polyline.id, polyline.latlngs, polyline.popup, polyline.tooltip, polyline.options);
+                        }.bind(this));
+                    }
+                },
+                updatePolygones: function (polygone) {
+                    if (this.map) {
+                        polygone.forEach(function (polygone) {
+                            this.addPolygone(polygone.id, polygone.latlngs, polygone.popup, polygone.tooltip, polygone.options);
+                        }.bind(this));
+                    }
+                },
+                updateRectangles: function (rectangle) {
+                    if (this.map) {
+                        rectangle.forEach(function (rectangle) {
+                            this.addRectangle(rectangle.id, rectangle.bounds, rectangle.popup, rectangle.tooltip, rectangle.options);
+                        }.bind(this));
+                    }
+                },
+                updateCircles: function (circle) {
+                    if (this.map) {
+                        circle.forEach(function (circle) {
+                            this.addCircle(circle.id, circle.lat, circle.lng, circle.popup, circle.tooltip, circle.options);
                         }.bind(this));
                     }
                 },
@@ -153,6 +203,39 @@
                     }
                     this.polylines.push({id, polyline: pPolyline});
                 },
+                addPolygone: function (id, latlngs, popup, tooltip, options) {
+                    this.removePolygone(id);
+                    const pPolygon = L.polygon(latlngs, options).addTo(this.map);
+                    if (popup) {
+                        pPolygon.bindPopup(popup);
+                    }
+                    if (tooltip) {
+                        pPolygon.bindTooltip(tooltip);
+                    }
+                    this.polygones.push({id, polygon: pPolygon});
+                },
+                addRectangle: function (id, bounds, popup, tooltip, options) {
+                    this.removeRectangle(id);
+                    const rRectangle = L.rectangle(bounds, options).addTo(this.map);
+                    if (popup) {
+                        rRectangle.bindPopup(popup);
+                    }
+                    if (tooltip) {
+                        rRectangle.bindTooltip(tooltip);
+                    }
+                    this.rectangles.push({id, rectangle: rRectangle});
+                },
+                addCircle: function (id, lat, lng, popup, tooltip, options) {
+                    this.removeCircle(id);
+                    const cCircle = L.circle([lat, lng], options).addTo(this.map);
+                    if (popup) {
+                        cCircle.bindPopup(popup);
+                    }
+                    if (tooltip) {
+                        cCircle.bindTooltip(tooltip);
+                    }
+                    this.circles.push({id, marker: cCircle});
+                },
                 removeMarker: function (id) {
                     const m = this.markers.find(m => m.id === id);
                     if (m) {
@@ -161,10 +244,31 @@
                     }
                 },
                 removePolyline: function (id) {
-                    const m = this.polylines.find(m => m.id === id);
-                    if (m) {
-                        m.polyline.remove();
-                        this.polylines = this.polylines.filter(m => m.id !== id);
+                    const p = this.polylines.find(p => p.id === id);
+                    if (p) {
+                        p.polyline.remove();
+                        this.polylines = this.polylines.filter(p => p.id !== id);
+                    }
+                },
+                removePolygone: function (id) {
+                    const p = this.polygones.find(p => p.id === id);
+                    if (p) {
+                        p.polygones.remove();
+                        this.polygones = this.polygones.filter(p => p.id !== id);
+                    }
+                },
+                removeRectangle: function (id) {
+                    const r = this.rectangles.find(r => r.id === id);
+                    if (r) {
+                        r.rectangle.remove();
+                        this.rectangles = this.rectangles.filter(r => r.id !== id);
+                    }
+                },
+                removeCircle: function (id) {
+                    const c = this.circles.find(c => c.id === id);
+                    if (c) {
+                        c.circle.remove();
+                        this.circles = this.circles.filter(c => c.id !== id);
                     }
                 },
                 removeAllMarkers: function () {
@@ -174,6 +278,18 @@
                 removeAllPolylines: function () {
                     this.polylines.forEach(({polyline}) => polyline.remove());
                     this.polylines = [];
+                },
+                removeAllPolygones: function () {
+                    this.polygones.forEach(({polygone}) => polygone.remove());
+                    this.polygones = [];
+                },
+                removeAllRectangles: function () {
+                    this.rectangles.forEach(({rectangle}) => rectangle.remove());
+                    this.rectangles = [];
+                },
+                removeAllCircles: function () {
+                    this.circles.forEach(({circle}) => circle.remove());
+                    this.circles = [];
                 },
             }"
             {{ $extraAlpineAttributeBag }}

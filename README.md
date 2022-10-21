@@ -48,6 +48,8 @@ class Map extends MapWidget
 }
 ```
 
+> If you create a new widget using the `make:filament-widget` command, remember to remove the view created along with it otherwise the map will not be rendered.
+
 ## Map Configuration
 
 For some configuration its possible to use properties:

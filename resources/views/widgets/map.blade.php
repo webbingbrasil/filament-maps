@@ -29,7 +29,7 @@
 
         <div @class(['px-4 py-2' => $hasBorder])>
             <x-filament-maps::map
-                @class(['rounded-xl' => $rounded && $hasBorder])
+                :rounded="$rounded && $hasBorder"
                 :tile-layer-url="$this->getTileLayerUrl()"
                 :tile-layer-options="$this->getTileLayerOptions()"
                 :height="$this->getHeight()"

@@ -10,6 +10,7 @@
     'extraAttributeBag' => '',
     'extraAlpineAttributeBag' => '',
     'modals' => null,
+    'rounded' => true,
 ])
 
 @php
@@ -20,7 +21,10 @@
 @endphp
 <div>
     <div
-        {{ $attributes->class('h-full w-full overflow-hidden') }}
+        {{ $attributes->class([
+            'h-full w-full overflow-hidden',
+            'rounded-xl' => $rounded
+        ]) }}
         {{ $extraAttributeBag }}>
         <div
             wire:ignore

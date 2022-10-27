@@ -307,7 +307,7 @@
                     @endforeach
                 </div>
             @endif
-            <div x-ref="map" class="flex-1 relative" style="width: 100%; height: {{ $height }}; z-index: 2"></div>
+            <div x-ref="map" class="flex-1 relative" style="width: 100%; height: {{ $height }}; z-index: 0"></div>
         </div>
     </div>
 

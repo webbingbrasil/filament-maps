@@ -211,6 +211,15 @@ Actions\Action::make('form')
 
 In this example we use `addMarker()` method to add a new marker dynamically and `centerTo()` to set new map center and zoom level.
 
+You can manipulate markers data using:
+
+```php
+$liveWire->mapMarkers(array $markers); // update the markers
+$livewire->addMarker(Marker $marker); // add a new marker
+$livewire->removeMarker(string $id); // remove a marker
+$livewire->updateMarker(string $id, Marker $marker); // update a marker
+```
+
 > Note: Markers need to have a unique name. If you try to add a marker with the same name as an existing one, the existing one will be replaced.
 
 #### Using JS Callback
@@ -270,7 +279,7 @@ $this
 }
 ```
 
->Use `map` to access the Leaflet instance on your action callback.
+> The callback method is called during the rendering of the marker and must return a JS that will be executed on event click. Use `map` to access the Leaflet instance in your callback.
  
 ### Marker Icon Color
 
@@ -299,17 +308,27 @@ Marker::make('id')
     )
 ```
 
-### Marker Actions
+### Display Marker Details
 
-You can use actions as described above to manipulate markers:
+At the time, markers do not have the same functionality as Actions but using [livewire events](https://laravel-livewire.com/docs/2.x/events) you can do something similar, for example:
+
+Add a callback to yout marker:
 
 ```php
-$liveWire->mapMarkers(array $markers); // update the markers
-$livewire->addMarker(Marker $marker); // add a new marker
-$livewire->removeMarker(string $id); // remove a marker
-$livewire->updateMarker(string $id, Marker $marker); // update a marker
+$content = '<strong>marker name</strong><br />marker address';
+Marker::make('place')->callback('Livewire.emit("updateFooter", ' . json_encode($content) . ')');
 ```
 
+Register event listener in map widget:
+
+```php
+protected $listeners = ['updateFooter' => 'showMarkerData'];
+
+public function showMarkerData($data)
+{
+    $this->footer = new HtmlString($data);
+}
+```
 
 ## Polylines
 

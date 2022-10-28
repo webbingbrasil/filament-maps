@@ -326,7 +326,7 @@ protected $listeners = ['updateFooter' => 'showMarkerData'];
 public function showMarkerData($placeId)
 {
     $place = Place::find($placeId);
-    $this->footer = view('marker-details', $place->toArray());
+    $this->footer = view('marker-details', $place);
 }
 ```
 

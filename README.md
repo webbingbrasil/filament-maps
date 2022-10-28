@@ -315,8 +315,7 @@ At the time, markers do not have the same functionality as Actions but using [li
 Add a callback to yout marker:
 
 ```php
-$content = '<strong>marker name</strong><br />marker address';
-Marker::make('place')->callback('Livewire.emit("updateFooter", ' . json_encode($content) . ')');
+Marker::make('place')->callback('Livewire.emit("updateFooter", ' . $placeId . ')');
 ```
 
 Register event listener in map widget:
@@ -324,9 +323,10 @@ Register event listener in map widget:
 ```php
 protected $listeners = ['updateFooter' => 'showMarkerData'];
 
-public function showMarkerData($data)
+public function showMarkerData($placeId)
 {
-    $this->footer = new HtmlString($data);
+    $place = Place::find($placeId);
+    $this->footer = view('marker-details', $place->toArray());
 }
 ```
 

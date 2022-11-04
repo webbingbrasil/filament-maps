@@ -49,6 +49,8 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
 
     protected bool $rounded = true;
 
+    protected bool $fullpage = false;
+
     public function mount()
     {
         $this->configure();
@@ -123,5 +125,10 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
     public function getRounded(): bool
     {
         return $this->rounded;
+    }
+
+    public function isFullPage(): bool
+    {
+        return $this->fullpage;
     }
 }

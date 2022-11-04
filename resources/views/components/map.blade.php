@@ -11,6 +11,7 @@
     'extraAlpineAttributeBag' => '',
     'modals' => null,
     'rounded' => true,
+    'fullpage' => false,
 ])
 
 @php
@@ -32,6 +33,12 @@
                 mode: null,
 
                 map: null,
+
+                fullpage: false,
+
+                isFullscreen: false,
+
+                mapDefaultHeight: '{{ $height }}',
 
                 markers: [],
 
@@ -113,9 +120,58 @@
                         this.updateCircles(circles);
                     });
 
+                    this.map.on('fullscreenchange', () => this.isFullscreen = this.map.isFullscreen());
+
                     @foreach($actions as $action)
                         this.addAction('{{ $action->getMapActionId()  }}', '{{ $action->getPosition() }}');
                     @endforeach
+                    @if($fullpage)
+                        this.toggleFullpage();
+                    @endif
+                },
+                enterFullscreen: function () {
+                    if (this.map._container.requestFullscreen) {
+                        this.map._container.requestFullscreen();
+                    } else if (this.map._container.mozRequestFullScreen) {
+                        this.map._container.mozRequestFullScreen();
+                    } else if (this.map._container.webkitRequestFullscreen) {
+                        this.map._container.webkitRequestFullscreen();
+                    } else if (this.map._container.msRequestFullscreen) {
+                        this.map._container.msRequestFullscreen();
+                    }
+                },
+                toggleFullscreen: function () {
+                    if (this.fullpage) {
+                        this.toggleFullpage();
+                    } else {
+                        this.mapDefaultHeight = this.$refs.map.style.height;
+                        this.$refs.map.style.height = '100%';
+                        this.map.invalidateSize();
+                    }
+                },
+                toggleFullpage: function () {
+                    if (this.fullpage == false) {
+                        document.querySelector('.filament-main-content').style.position = 'relative';
+                        document.querySelector('.filament-main.gap-y-6').style.gap = '0';
+                        document.querySelector('.filament-header').style.display = 'none';
+                        const topbarHeight = document.querySelector('.filament-main-topbar').offsetHeight;
+                        const fullHeight = window.innerHeight - topbarHeight;
+                        this.$refs.map.style.height = fullHeight + 'px';
+                        this.$refs.map.style.position = 'absolute';
+                        this.$refs.map.style.top = '0';
+                        this.$refs.map.style.left = '0';
+                        this.map.invalidateSize();
+                        this.fullpage = true;
+                        return;
+                    }
+
+                    document.querySelector('.filament-main-content').style.position = '';
+                    document.querySelector('.filament-main.gap-y-6').style.gap = '';
+                    document.querySelector('.filament-header').style.display = '';
+                    this.$refs.map.style.height = this.mapDefaultHeight;
+                    this.$refs.map.style.position = '';
+                    this.map.invalidateSize();
+                    this.fullpage = false;
                 },
                 setTileLayer: function (mode) {
                     if (this.tileLayers[mode]) {
@@ -307,7 +363,7 @@
                     @endforeach
                 </div>
             @endif
-            <div x-ref="map" class="flex-1 relative" style="width: 100%; height: {{ $height }}; z-index: 0"></div>
+            <div x-ref="map" class="filament-map-container flex-1 relative" style="width: 100%; height: {{ $height }}; z-index: 0"></div>
         </div>
     </div>
 

@@ -6,7 +6,7 @@
 Render map widgets using [Leaflet](https://leafletjs.com/).
 
 - Support for multiple maps on the same page
-- Two actions built-in: `CenterMapAction` and `ZoomAction`
+- Built-in actions: `CenterMapAction`, `ZoomAction`, `FullpageAction` and , `FullscreenAction`
 - Add Filament Actions directly on the as map control buttons
 - Multiple layers support. A DarkModeTile layer is included.
 
@@ -61,6 +61,7 @@ For some configuration its possible to use properties:
 - `$height`: height of the map. Default is `400px`.
 - `$heading`: set the heading of the map.
 - `$footer`: set the footer of the map.
+- `$fullpage`: show the map in fullpage mode. Default is `false`.
 
 But you can also use the `setUp` method if you need more control:
 
@@ -102,7 +103,6 @@ MyMap::configureUsing(function (ResellerMap $widget) {
     ])
 });
 ```
-
 
 ## Tile Layers
 
@@ -149,6 +149,7 @@ You can add actions to the map widget. Actions are buttons that can be clicked t
 The `ZoomAction` action will add a button to the map that will zoom in or out the map. You can set the zoom level using the `zoom()` method:
 
 ```php
+use Webbingbrasil\FilamentMaps\Actions;
 Actions\ZoomAction::make()->zoom(2), // Zoom in/out 2 levels
 ```
 
@@ -174,6 +175,16 @@ Actions\UserPositionAction::make()->centerOnUserPosition()->zoom(13)
 ```
 
 > Note: The center on user position feature will only work if the user browser supports [Navigator.geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation). Also, the user must be on a secure context (HTTPS) and needs to allow access to the location.
+
+### Full Page or Full Screen Action
+
+You can add a button to the map to show it in full page or full screen mode.:
+
+```php
+use Webbingbrasil\FilamentMaps\Actions;
+Actions\FullpageAction::make()
+Actions\FullscreenAction::make()
+```
 
 ### Custom Action
 

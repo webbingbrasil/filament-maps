@@ -36,7 +36,8 @@
                 :options="$this->getMapOptions()"
                 :actions="$this->getCachedActions()"
                 :extra-attribute-bag="$this->getExtraAttributeBag()"
-                :extra-alpine-attribute-bag="$this->getExtraAlpineAttributeBag()" />
+                :extra-alpine-attribute-bag="$this->getExtraAlpineAttributeBag()"
+                :fullpage="$this->isFullPage()" />
         </div>
 
         @if ($footer)
@@ -53,3 +54,4 @@
         @endif
     </div>
 </x-filament::widget>
+

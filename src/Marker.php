@@ -160,6 +160,7 @@ class Marker implements Arrayable
             'tooltip'=> $this->getTooltip(),
             'icon' => $this->getIcon(),
             'callback' => $this->getCallback(),
+            'type' => 'marker',
         ];
     }
 }

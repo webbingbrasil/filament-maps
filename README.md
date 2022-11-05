@@ -9,6 +9,7 @@ Render map widgets using [Leaflet](https://leafletjs.com/).
 - Built-in actions: `CenterMapAction`, `ZoomAction`, `FullpageAction` and , `FullscreenAction`
 - Add Filament Actions directly on the as map control buttons
 - Multiple layers support. A DarkModeTile layer is included.
+- Marker clustering support
 
 ## Installation
 
@@ -291,7 +292,33 @@ $this
 ```
 
 > The callback method is called during the rendering of the marker and must return a JS that will be executed on event click. Use `map` to access the Leaflet instance in your callback.
- 
+
+### Marker Cluster
+
+You can use the `MarkerCluster` class to group markers in clusters. This is useful if you have a lot of markers on the map.
+
+```php
+use Webbingbrasil\FilamentMaps\MarkerCluster;
+
+$this
+    ->mapMarkers([
+        MarkerCluster::make([
+            Marker::make('id')
+                ->lat(51.505)
+                ->lng(-0.09)
+                ->popup('I am a popup'),
+            Marker::make('id')
+                ->lat(51.505)
+                ->lng(-0.09)
+                ->tooltip('I am a tooltip')
+                ->callback(<<<JS
+                    alert('Hello World!');
+                JS),
+        ]),
+    ])
+}
+```
+
 ### Marker Icon Color
 
 You can set the color of the marker icon using `color()` method:

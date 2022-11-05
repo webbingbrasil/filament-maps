@@ -3,6 +3,7 @@
 namespace Webbingbrasil\FilamentMaps\Concerns;
 
 use Webbingbrasil\FilamentMaps\Marker;
+use Webbingbrasil\FilamentMaps\MarkerCluster;
 
 trait HasMarkers
 {
@@ -18,8 +19,8 @@ trait HasMarkers
     protected function prepareMarkers(array $data): array
     {
         return collect($data)
-            ->map(function (array | Marker $item) {
-                if ($item instanceof Marker) {
+            ->map(function (array | Marker | MarkerCluster $item) {
+                if ($item instanceof Marker || $item instanceof MarkerCluster) {
                     return $item->toArray();
                 }
 

@@ -2,7 +2,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/gh/jerroydmoore/leaflet-button@master/L.Control.Button.js"></script>
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
-<script src='https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster-src.js'></script>
+<script src='https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js'></script>
 <script>
     window.filamentMaps = window.filamentMaps || [];
 
@@ -22,6 +22,16 @@
 
         var pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round();
         this._setPos(pos);
+    };
+
+    L.MarkerClusterGroup.prototype._unspiderfyZoomAnim = function (zoomDetails) {
+        //Wait until the first zoomanim after the user has finished touch-zooming before running the animation
+        if (!this._map || L.DomUtil.hasClass(this._map?._mapPane, 'leaflet-touching')) {
+            return;
+        }
+
+        this._map.off('zoomanim', this._unspiderfyZoomAnim, this);
+        this._unspiderfy(zoomDetails);
     };
 
     L.Tooltip.prototype._updatePosition = function (e) {

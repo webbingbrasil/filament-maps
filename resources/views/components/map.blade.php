@@ -42,6 +42,8 @@
 
                 markers: [],
 
+                markerClusters: [],
+
                 polylines: [],
 
                 polygones: [],
@@ -187,6 +189,9 @@
                 },
                 updateMarkers: function (markers) {
                     if (this.map) {
+                        this.markerClusters.forEach((cluster) => {
+                            this.map.removeLayer(cluster);
+                        });
                         this.markers.forEach((marker) => {
                             if (! markers.find((m) => m.id == marker.id)) {
                                 this.removeMarker(marker.id);
@@ -194,7 +199,12 @@
                         });
 
                         markers.forEach(function (marker) {
-                            this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.tooltip, marker.icon, marker.callback);
+                            if (marker.type === 'marker') {
+                                this.addMarker(marker.id, marker.lat, marker.lng, marker.popup, marker.tooltip, marker.icon, marker.callback);
+                            }
+                            if (marker.type === 'cluster') {
+                                this.addMarkerCluster(marker.markers);
+                            }
                         }.bind(this));
                     }
                 },
@@ -230,13 +240,13 @@
                     var button = new L.Control.Button(L.DomUtil.get(id), { position });
                     button.addTo(this.map);
                 },
-                addMarker: function (id, lat, lng, popup, tooltip, icon, callback) {
+                prepareMarker: function (id, lat, lng, popup, tooltip, icon, callback) {
                     this.removeMarker(id);
                     var options = {};
                     if (icon) {
                         options.icon = L.icon(icon);
                     }
-                    const mMarker = L.marker([lat, lng], options).addTo(this.map);
+                    const mMarker = L.marker([lat, lng], options);
                     if (popup) {
                         mMarker.bindPopup(popup);
                     }
@@ -247,6 +257,20 @@
                         mMarker.on('click', new Function('var map = this.map; ' + callback).bind(this));
                     }
                     this.markers.push({id, marker: mMarker});
+                    return mMarker;
+                },
+                addMarker: function (id, lat, lng, popup, tooltip, icon, callback) {
+                    this.prepareMarker(id, lat, lng, popup, tooltip, icon, callback).addTo(this.map);
+                },
+                addMarkerCluster: function (markers) {
+                    const mMarkers = [];
+                    const mMarkerCluster = L.markerClusterGroup().addTo(this.map);
+                    markers.forEach(function ({id, lat, lng, popup, tooltip, icon, callback}) {
+                        const mMarker = this.prepareMarker(id, lat, lng, popup, tooltip, icon, callback);
+                        mMarkers.push(mMarker);
+                    }.bind(this));
+                    mMarkerCluster.addLayers(mMarkers);
+                    this.markerClusters.push(mMarkerCluster);
                 },
                 addPolyline: function (id, latlngs, popup, tooltip, options) {
                     this.removePolyline(id);

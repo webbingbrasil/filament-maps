@@ -103,6 +103,12 @@
                         this.map.setView(center.location, center.zoom);
                     });
 
+                    const resizeObserver = new ResizeObserver(() => {
+                      this.map.invalidateSize();
+                    });
+
+                    resizeObserver.observe(this.map._container);
+
                     $watch('markersData', (markers) => {
                         this.updateMarkers(markers);
                     });
@@ -199,7 +205,6 @@
                         this.$refs.map.style.position = 'absolute';
                         this.$refs.map.style.top = '0';
                         this.$refs.map.style.left = '0';
-                        this.map.invalidateSize();
                         this.fullpage = true;
                         return;
                     }
@@ -209,7 +214,6 @@
                     document.querySelector('.filament-header').style.display = '';
                     this.$refs.map.style.height = this.mapDefaultHeight;
                     this.$refs.map.style.position = '';
-                    this.map.invalidateSize();
                     this.fullpage = false;
                 },
                 setTileLayer: function (mode) {

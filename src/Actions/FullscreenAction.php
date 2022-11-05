@@ -16,7 +16,7 @@ class FullscreenAction extends Action
     {
         $this->label(__('Fullscreen'));
         $this->icon('filamentmapsicon-fullscreen');
-        $this->callback('map.toggleFullscreen()');
+        $this->callback('toggleFullscreen()');
     }
 
     public static function getDefaultName(): ?string

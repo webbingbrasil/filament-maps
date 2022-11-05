@@ -20,7 +20,7 @@
         fn (\Webbingbrasil\FilamentMaps\Actions\Action $action ): bool => ! $action->isHidden(),
     );
 @endphp
-<div>
+<div class="filament-map">
     <div
         {{ $attributes->class([
             'h-full w-full overflow-hidden',
@@ -74,6 +74,7 @@
                     window.filamentMaps['{{ $this->getName() }}'] = L.map(this.$refs.map, {{ json_encode(array_merge($options, ['zoomControl' => false])) }});
                     this.map = window.filamentMaps['{{ $this->getName() }}'];
 
+
                     @foreach((array) $tileLayerUrl as $mode => $url)
                     this.tileLayers['{{ $mode }}'] = L.tileLayer('{{ $url }}', {{ json_encode($tileLayerOptions[$mode] ?? $tileLayerOptions) }});
                     @endforeach
@@ -122,7 +123,30 @@
                         this.updateCircles(circles);
                     });
 
-                    this.map.on('fullscreenchange', () => this.isFullscreen = this.map.isFullscreen());
+                    var fullscreenchange;
+
+                    if ('onfullscreenchange' in document) {
+                        fullscreenchange = 'fullscreenchange';
+                    } else if ('onmozfullscreenchange' in document) {
+                        fullscreenchange = 'mozfullscreenchange';
+                    } else if ('onwebkitfullscreenchange' in document) {
+                        fullscreenchange = 'webkitfullscreenchange';
+                    } else if ('onmsfullscreenchange' in document) {
+                        fullscreenchange = 'MSFullscreenChange';
+                    }
+                    if (fullscreenchange) {
+                        document.addEventListener('fullscreenchange', function () {
+                            var fullscreenElement =
+                                document.fullscreenElement ||
+                                document.mozFullScreenElement ||
+                                document.webkitFullscreenElement ||
+                                document.msFullscreenElement;
+
+                            if (typeof fullscreenElement === 'undefined' && this.isFullscreen) {
+                                this.isFullscreen = false;
+                            }
+                        }.bind(this));
+                    }
 
                     @foreach($actions as $action)
                         this.addAction('{{ $action->getMapActionId()  }}', '{{ $action->getPosition() }}');
@@ -131,24 +155,37 @@
                         this.toggleFullpage();
                     @endif
                 },
-                enterFullscreen: function () {
-                    if (this.map._container.requestFullscreen) {
-                        this.map._container.requestFullscreen();
-                    } else if (this.map._container.mozRequestFullScreen) {
-                        this.map._container.mozRequestFullScreen();
-                    } else if (this.map._container.webkitRequestFullscreen) {
-                        this.map._container.webkitRequestFullscreen();
-                    } else if (this.map._container.msRequestFullscreen) {
-                        this.map._container.msRequestFullscreen();
-                    }
-                },
                 toggleFullscreen: function () {
-                    if (this.fullpage) {
-                        this.toggleFullpage();
+                    var container = this.$refs.map.parentElement;
+                    while (container) {
+                        if (container.classList.contains('filament-map')) {
+                            break;
+                        }
+                        container = container.parentElement;
+                    }
+
+                    if (this.isFullscreen) {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.mozCancelFullScreen) {
+                            document.mozCancelFullScreen();
+                        } else if (document.webkitCancelFullScreen) {
+                            document.webkitCancelFullScreen();
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen();
+                        }
+                        this.isFullscreen = false;
                     } else {
-                        this.mapDefaultHeight = this.$refs.map.style.height;
-                        this.$refs.map.style.height = '100%';
-                        this.map.invalidateSize();
+                        if (container.requestFullscreen) {
+                            container.requestFullscreen();
+                        } else if (container.mozRequestFullScreen) {
+                            container.mozRequestFullScreen();
+                        } else if (container.webkitRequestFullscreen) {
+                            container.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                        } else if (container.msRequestFullscreen) {
+                            container.msRequestFullscreen();
+                        }
+                        this.isFullscreen = true;
                     }
                 },
                 toggleFullpage: function () {
@@ -387,7 +424,7 @@
                     @endforeach
                 </div>
             @endif
-            <div x-ref="map" class="filament-map-container flex-1 relative" style="width: 100%; height: {{ $height }}; z-index: 0"></div>
+            <div x-ref="map" class="filament-map-container flex-1 relative" style="width: 100%; height: {{ $height }}; min-height: 100%; z-index: 0"></div>
         </div>
     </div>
 

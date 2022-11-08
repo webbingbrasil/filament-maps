@@ -51,6 +51,8 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
 
     protected bool $fullpage = false;
 
+    public ?array $fitBounds = null;
+
     public function mount()
     {
         $this->configure();
@@ -130,5 +132,17 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
     public function isFullPage(): bool
     {
         return $this->fullpage;
+    }
+
+    public function fitBounds(array $bounds): self
+    {
+        $this->fitBounds = $bounds;
+
+        return $this;
+    }
+
+    public function getFitBounds(): ?array
+    {
+        return $this->fitBounds;
     }
 }

@@ -16,6 +16,8 @@ class CenterMapAction extends Action
 
     protected bool $centerOnUserPosition = false;
 
+    protected ?array $fitBounds = null;
+
     protected string $userPositionLabel = 'you are here';
 
     protected function setUp(): void
@@ -23,6 +25,10 @@ class CenterMapAction extends Action
         $this->label(__('Center map'));
         $this->icon('filamentmapsicon-o-arrows-pointing-in');
         $this->callback(function () {
+            if (!empty($this->fitBounds)) {
+                return $this->getFitBoundsAction();
+            }
+
             if ($this->centerOnUserPosition) {
                 return $this->getCenterOnUserPositionAction();
             }
@@ -34,6 +40,13 @@ class CenterMapAction extends Action
     public static function getDefaultName(): ?string
     {
         return 'centerMap';
+    }
+
+    public function fitBounds(array $bounds): self
+    {
+        $this->fitBounds = $bounds;
+
+        return $this;
     }
 
     public function centerTo(array $location): self
@@ -71,6 +84,15 @@ class CenterMapAction extends Action
 
         return <<<JS
             map.setView($latlng, $zoom)
+        JS;
+    }
+
+    protected function getFitBoundsAction(): string
+    {
+        $bounds = json_encode($this->fitBounds);
+
+        return <<<JS
+            map.fitBounds($bounds)
         JS;
     }
 

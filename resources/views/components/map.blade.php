@@ -54,6 +54,8 @@
 
                 tileLayers: {},
 
+                fitBounds: @entangle('fitBounds'),
+
                 centerTo: @entangle('centerTo'),
 
                 markersData: @entangle('markers'),
@@ -74,6 +76,9 @@
                     window.filamentMaps['{{ $this->getName() }}'] = L.map(this.$refs.map, {{ json_encode(array_merge($options, ['zoomControl' => false])) }});
                     this.map = window.filamentMaps['{{ $this->getName() }}'];
 
+                    if (this.fitBounds) {
+                        this.map.fitBounds(this.fitBounds);
+                    }
 
                     @foreach((array) $tileLayerUrl as $mode => $url)
                     this.tileLayers['{{ $mode }}'] = L.tileLayer('{{ $url }}', {{ json_encode($tileLayerOptions[$mode] ?? $tileLayerOptions) }});
@@ -98,6 +103,12 @@
                     this.updateRectangles(this.rectanglesData);
 
                     this.updateCircles(this.circlesData);
+
+                    $watch('fitBounds', (bounds) => {
+                        if (bounds) {
+                            this.map.fitBounds(bounds);
+                        }
+                    });
 
                     $watch('centerTo', (center) => {
                         this.map.setView(center.location, center.zoom);

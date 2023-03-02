@@ -70,11 +70,11 @@ But you can also use the `setUp` method if you need more control:
 public function setUp(): void
 {
     $this
+        ->tileLayerUrl(...)
         ->height(..)
         ->rounded(..)
         ->mapOptions(..)
-        ->tileLayerUrl(...)
-        ->markers([
+        ->mapMarkers([
             ...
         ])
         ->actions([

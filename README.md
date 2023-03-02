@@ -172,7 +172,7 @@ public function getActions(): array
 You can also center the map on user position:
 
 ```php
-Actions\UserPositionAction::make()->centerOnUserPosition()->zoom(13)
+Actions\CenterMapAction::make()->centerOnUserPosition()->zoom(13)
 ```
 
 > Note: The center on user position feature will only work if the user browser supports [Navigator.geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation). Also, the user must be on a secure context (HTTPS) and needs to allow access to the location.

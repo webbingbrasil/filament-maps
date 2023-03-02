@@ -77,6 +77,11 @@ public function setUp(): void
         ->mapMarkers([
             ...
         ])
+        ->fitBounds([
+            [lat, lng],
+            [lat, lng]
+            ...
+        ])
         ->actions([
             ..
         ]);
@@ -176,6 +181,37 @@ Actions\CenterMapAction::make()->centerOnUserPosition()->zoom(13)
 ```
 
 > Note: The center on user position feature will only work if the user browser supports [Navigator.geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation). Also, the user must be on a secure context (HTTPS) and needs to allow access to the location.
+
+#### Fit Bounds
+
+You can use fitBounds() to adjusts the zoom level and center of the map to show a given geographical area
+
+```php
+Actions\CenterMapAction::make()->fitBounds([
+   [lat, lng],
+   [lat, lng],
+])
+```
+
+You can pass multiple points to be used in fitBounds or use the initial bounderies configured in setUp()
+
+```php
+public function setUp(): void
+{
+    $this->fitBounds([
+        [lat, lng],
+        [lat, lng],
+        ...
+    ]);
+}
+
+public function getActions(): array
+{
+    return [
+        CenterMapAction::make()->fitBounds($this->getFitBounds()),
+    ];
+}
+```
 
 ### Full Page or Full Screen Action
 

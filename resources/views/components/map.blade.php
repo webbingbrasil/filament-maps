@@ -152,7 +152,7 @@
                         fullscreenchange = 'MSFullscreenChange';
                     }
                     if (fullscreenchange) {
-                        document.addEventListener('fullscreenchange', function () {
+                        document.addEventListener(fullscreenchange, function () {
                             var fullscreenElement =
                                 document.fullscreenElement ||
                                 document.mozFullScreenElement ||
@@ -161,6 +161,7 @@
 
                             if (typeof fullscreenElement === 'undefined' && this.isFullscreen) {
                                 this.isFullscreen = false;
+                                this.$refs.map.style.height = this.mapDefaultHeight;
                             }
                         }.bind(this));
                     }
@@ -192,18 +193,21 @@
                             document.msExitFullscreen();
                         }
                         this.isFullscreen = false;
-                    } else {
-                        if (container.requestFullscreen) {
-                            container.requestFullscreen();
-                        } else if (container.mozRequestFullScreen) {
-                            container.mozRequestFullScreen();
-                        } else if (container.webkitRequestFullscreen) {
-                            container.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-                        } else if (container.msRequestFullscreen) {
-                            container.msRequestFullscreen();
-                        }
-                        this.isFullscreen = true;
+                        this.$refs.map.style.height = this.mapDefaultHeight;
+                        return;
                     }
+                    
+                    if (container.requestFullscreen) {
+                        container.requestFullscreen();
+                    } else if (container.mozRequestFullScreen) {
+                        container.mozRequestFullScreen();
+                    } else if (container.webkitRequestFullscreen) {
+                        container.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                    } else if (container.msRequestFullscreen) {
+                        container.msRequestFullscreen();
+                    }
+                    this.$refs.map.style.height = window.screen.height + 'px';
+                    this.isFullscreen = true;
                 },
                 toggleFullpage: function () {
                     if (this.fullpage == false) {

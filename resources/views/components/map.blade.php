@@ -40,6 +40,8 @@
 
                 mapDefaultHeight: '{{ $height }}',
 
+                mapFullpageHeight: 0,
+
                 markers: [],
 
                 markerClusters: [],
@@ -140,6 +142,9 @@
                         this.updateCircles(circles);
                     });
 
+                    const topbarHeight = document.querySelector('.filament-main-topbar').offsetHeight;
+                    this.mapFullpageHeight = (window.innerHeight - topbarHeight) + 'px';
+
                     var fullscreenchange;
 
                     if ('onfullscreenchange' in document) {
@@ -161,7 +166,7 @@
 
                             if (typeof fullscreenElement === 'undefined' && this.isFullscreen) {
                                 this.isFullscreen = false;
-                                this.$refs.map.style.height = this.mapDefaultHeight;
+                                this.$refs.map.style.height = this.fullpage ? this.mapFullpageHeight : this.mapDefaultHeight;
                             }
                         }.bind(this));
                     }
@@ -193,7 +198,7 @@
                             document.msExitFullscreen();
                         }
                         this.isFullscreen = false;
-                        this.$refs.map.style.height = this.mapDefaultHeight;
+                        this.$refs.map.style.height = this.fullpage ? this.mapFullpageHeight : this.mapDefaultHeight;
                         return;
                     }
                     
@@ -206,7 +211,7 @@
                     } else if (container.msRequestFullscreen) {
                         container.msRequestFullscreen();
                     }
-                    this.$refs.map.style.height = window.screen.height + 'px';
+                    this.$refs.map.style.height = '100vh';
                     this.isFullscreen = true;
                 },
                 toggleFullpage: function () {
@@ -214,9 +219,7 @@
                         document.querySelector('.filament-main-content').style.position = 'relative';
                         document.querySelector('.filament-main.gap-y-6').style.gap = '0';
                         document.querySelector('.filament-header').style.display = 'none';
-                        const topbarHeight = document.querySelector('.filament-main-topbar').offsetHeight;
-                        const fullHeight = window.innerHeight - topbarHeight;
-                        this.$refs.map.style.height = fullHeight + 'px';
+                        this.$refs.map.style.height = this.mapFullpageHeight;
                         this.$refs.map.style.position = 'absolute';
                         this.$refs.map.style.top = '0';
                         this.$refs.map.style.left = '0';

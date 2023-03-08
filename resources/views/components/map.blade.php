@@ -75,7 +75,7 @@
                         window.filamentMaps['{{ $this->getName() }}'].off();
                         window.filamentMaps['{{ $this->getName() }}'].remove();
                     }
-                    window.filamentMaps['{{ $this->getName() }}'] = L.map(this.$refs.map, {{ json_encode(array_merge($options, ['zoomControl' => false])) }});
+                    window.filamentMaps['{{ $this->getName() }}'] = leaflet.map(this.$refs.map, {{ json_encode(array_merge($options, ['zoomControl' => false])) }});
                     this.map = window.filamentMaps['{{ $this->getName() }}'];
 
                     if (this.fitBounds) {
@@ -83,7 +83,7 @@
                     }
 
                     @foreach((array) $tileLayerUrl as $mode => $url)
-                    this.tileLayers['{{ $mode }}'] = L.tileLayer('{{ $url }}', {{ json_encode($tileLayerOptions[$mode] ?? $tileLayerOptions) }});
+                    this.tileLayers['{{ $mode }}'] = leaflet.tileLayer('{{ $url }}', {{ json_encode($tileLayerOptions[$mode] ?? $tileLayerOptions) }});
                     @endforeach
 
                     let initialMode = '{{ $this->getTileLayerMode() }}';
@@ -201,7 +201,7 @@
                         this.$refs.map.style.height = this.fullpage ? this.mapFullpageHeight : this.mapDefaultHeight;
                         return;
                     }
-                    
+
                     if (container.requestFullscreen) {
                         container.requestFullscreen();
                     } else if (container.mozRequestFullScreen) {
@@ -296,16 +296,16 @@
                     }
                 },
                 addAction: function (id, position) {
-                    var button = new L.Control.Button(L.DomUtil.get(id), { position });
+                    var button = new leaflet.Control.Button(leaflet.DomUtil.get(id), { position });
                     button.addTo(this.map);
                 },
                 prepareMarker: function (id, lat, lng, popup, tooltip, icon, callback) {
                     this.removeMarker(id);
                     var options = {};
                     if (icon) {
-                        options.icon = L.icon(icon);
+                        options.icon = leaflet.icon(icon);
                     }
-                    const mMarker = L.marker([lat, lng], options);
+                    const mMarker = leaflet.marker([lat, lng], options);
                     if (popup) {
                         mMarker.bindPopup(popup);
                     }
@@ -323,7 +323,7 @@
                 },
                 addMarkerCluster: function (markers) {
                     const mMarkers = [];
-                    const mMarkerCluster = L.markerClusterGroup().addTo(this.map);
+                    const mMarkerCluster = leaflet.markerClusterGroup().addTo(this.map);
                     markers.forEach(function ({id, lat, lng, popup, tooltip, icon, callback}) {
                         const mMarker = this.prepareMarker(id, lat, lng, popup, tooltip, icon, callback);
                         mMarkers.push(mMarker);
@@ -333,7 +333,7 @@
                 },
                 addPolyline: function (id, latlngs, popup, tooltip, options) {
                     this.removePolyline(id);
-                    const pPolyline = L.polyline(latlngs, options).addTo(this.map);
+                    const pPolyline = leaflet.polyline(latlngs, options).addTo(this.map);
                     if (popup) {
                         pPolyline.bindPopup(popup);
                     }
@@ -344,7 +344,7 @@
                 },
                 addPolygone: function (id, latlngs, popup, tooltip, options) {
                     this.removePolygone(id);
-                    const pPolygon = L.polygon(latlngs, options).addTo(this.map);
+                    const pPolygon = leaflet.polygon(latlngs, options).addTo(this.map);
                     if (popup) {
                         pPolygon.bindPopup(popup);
                     }
@@ -355,7 +355,7 @@
                 },
                 addRectangle: function (id, bounds, popup, tooltip, options) {
                     this.removeRectangle(id);
-                    const rRectangle = L.rectangle(bounds, options).addTo(this.map);
+                    const rRectangle = leaflet.rectangle(bounds, options).addTo(this.map);
                     if (popup) {
                         rRectangle.bindPopup(popup);
                     }
@@ -366,7 +366,7 @@
                 },
                 addCircle: function (id, lat, lng, popup, tooltip, options) {
                     this.removeCircle(id);
-                    const cCircle = L.circle([lat, lng], options).addTo(this.map);
+                    const cCircle = leaflet.circle([lat, lng], options).addTo(this.map);
                     if (popup) {
                         cCircle.bindPopup(popup);
                     }

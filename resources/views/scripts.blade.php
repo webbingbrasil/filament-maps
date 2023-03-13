@@ -11,7 +11,7 @@
         }
         var pos = this._map._latLngToNewLayerPoint(this._latlng, e.zoom, e.center),
             anchor = this._getAnchor();
-        leaflet.DomUtileaflet.setPosition(this._container, pos.add(anchor));
+        leaflet.DomUtil.setPosition(this._container, pos.add(anchor));
     }
 
     leaflet.Marker.prototype._animateZoom = function (opt) {
@@ -25,7 +25,7 @@
 
     leaflet.MarkerClusterGroup.prototype._unspiderfyZoomAnim = function (zoomDetails) {
         //Wait until the first zoomanim after the user has finished touch-zooming before running the animation
-        if (!this._map || leaflet.DomUtileaflet.hasClass(this._map?._mapPane, 'leaflet-touching')) {
+        if (!this._map || leaflet.DomUtil.hasClass(this._map?._mapPane, 'leaflet-touching')) {
             return;
         }
 

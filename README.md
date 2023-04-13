@@ -382,6 +382,8 @@ Marker::make('id')
     )
 ```
 
+You can get extra icons and reledate config from [leaflet-color-markers](https://github.com/pointhi/leaflet-color-markers)
+
 ### Display Marker Details
 
 At the time, markers do not have the same functionality as Actions but using [livewire events](https://laravel-livewire.com/docs/2.x/events) you can do something similar, for example:

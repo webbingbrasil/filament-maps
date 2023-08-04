@@ -373,7 +373,7 @@
                     if (tooltip) {
                         cCircle.bindTooltip(tooltip);
                     }
-                    this.circles.push({id, marker: cCircle});
+                    this.circles.push({id, circle: cCircle});
                 },
                 removeMarker: function (id) {
                     const m = this.markers.find(m => m.id === id);
@@ -392,7 +392,7 @@
                 removePolygone: function (id) {
                     const p = this.polygones.find(p => p.id === id);
                     if (p) {
-                        p.polygones.remove();
+                        p.polygon.remove();
                         this.polygones = this.polygones.filter(p => p.id !== id);
                     }
                 },

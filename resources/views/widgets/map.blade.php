@@ -4,7 +4,7 @@
     $hasBorder = $this->getHasBorder();
     $rounded = $this->getRounded();
 @endphp
-<x-filament::widget class="filament-maps-widget">
+<x-filament-widgets::widget class="filament-maps-widget">
     <div @class([
         'bg-white rounded-xl shadow overflow-hidden',
         'p-2 space-y-2' => $hasBorder,
@@ -53,5 +53,5 @@
             </div>
         @endif
     </div>
-</x-filament::widget>
+</x-filament-widgets::widget>
 

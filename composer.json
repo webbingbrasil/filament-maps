@@ -16,9 +16,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "filament/filament": "^2.16"
-    },
-    "require-dev": {
+        "filament/filament": "^3.0-stable"
     },
     "autoload": {
         "psr-4": {

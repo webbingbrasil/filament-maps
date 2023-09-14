@@ -16,7 +16,8 @@
     ],
     "require": {
         "php": "^8.0",
-        "filament/filament": "^3.0-stable"
+        "filament/filament": "^3.0-stable",
+        "spatie/laravel-package-tools": "^1.16"
     },
     "autoload": {
         "psr-4": {
@@ -34,5 +35,8 @@
         "sort-packages": true
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "require-dev": {
+        "laravel/pint": "^1.13"
+    }
 }

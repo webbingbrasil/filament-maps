@@ -4,14 +4,11 @@ namespace Webbingbrasil\FilamentMaps;
 
 use Filament\Facades\Filament;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\HtmlString;
-use Webbingbrasil\FilamentCopyActions\Forms\Actions\CopyAction;
-use Filament\PluginServiceProvider;
-use Spatie\LaravelPackageTools\Package;
 use BladeUI\Icons\Factory;
-use Illuminate\Contracts\Container\Container;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class FilamentMapsProvider extends PluginServiceProvider
+class FilamentMapsProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {

@@ -16,15 +16,9 @@
                 'px-6 py-4' => !$hasBorder,
             ])>
                 <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                    <x-filament::card.heading>
-                        {{ $heading }}
-                    </x-filament::card.heading>
+                    {{ $heading }}
                 </div>
             </div>
-        @endif
-
-        @if ($heading)
-            <x-filament::hr />
         @endif
 
         <div @class(['px-4 py-2' => $hasBorder])>
@@ -39,10 +33,6 @@
                 :extra-alpine-attribute-bag="$this->getExtraAlpineAttributeBag()"
                 :fullpage="$this->isFullPage()" />
         </div>
-
-        @if ($footer)
-            <x-filament::hr />
-        @endif
 
         @if ($footer)
             <div @class([

@@ -4,35 +4,14 @@
     'icon' => null,
 ])
 
-@php
-    $alpineClickAction = null;
-    $wireClickAction = null;
-    if ($callback = $action->getCallback()) {
-        $alpineClickAction = trim($callback);
-    } elseif ($action->getEvent()) {
-        $emitArguments = collect([$action->getEvent()])
-            ->merge($action->getEventData())
-            ->map(fn (mixed $value) => \Illuminate\Support\Js::from($value)->toHtml())
-            ->implode(', ');
-
-        $wireClickAction = "\$emit($emitArguments)";
-    } elseif ((! $action->getAction()) || $action->getUrl()) {
-        $wireClickAction = null;
-    } elseif ($action->shouldOpenModal() || ($action->getAction() instanceof \Closure)) {
-        $wireClickAction = "mountAction('{$action->getName()}')";
-    } else {
-        $wireClickAction = $action->getAction();
-    }
-@endphp
-
 <x-dynamic-component
-    :x-on:click="$alpineClickAction"
+    :x-on:click="$action->getAlpineClickHandler()"
     :component="$component"
     :dark-mode="config('filament.dark_mode')"
     :attributes="\Filament\Support\prepare_inherited_attributes($attributes)->merge($action->getExtraAttributes())"
-    :form="$action->getForm()"
+    :form="$action->getFormToSubmit()"
     :tag="$action->getUrl() ? 'a' : 'button'"
-    :wire:click="$wireClickAction"
+    :wire:click="$action->getLivewireClickHandler()"
     :href="$action->isEnabled() ? $action->getUrl() : null"
     :target="$action->shouldOpenUrlInNewTab() ? '_blank' : null"
     :type="$action->canSubmitForm() ? 'submit' : 'button'"

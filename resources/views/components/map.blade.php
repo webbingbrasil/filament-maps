@@ -142,7 +142,7 @@
                         this.updateCircles(circles);
                     });
 
-                    const topbarHeight = document.querySelector('.filament-main-topbar').offsetHeight;
+                    const topbarHeight = document.querySelector('.fi-topbar').offsetHeight;
                     this.mapFullpageHeight = (window.innerHeight - topbarHeight) + 'px';
 
                     var fullscreenchange;
@@ -216,22 +216,26 @@
                 },
                 toggleFullpage: function () {
                     if (this.fullpage == false) {
-                        document.querySelector('.filament-main-content').style.position = 'relative';
-                        document.querySelector('.filament-main.gap-y-6').style.gap = '0';
-                        document.querySelector('.filament-header').style.display = 'none';
+                        document.querySelector('.fi-main-ctn').style.position = 'relative';
+                        document.querySelector('.fi-main-ctn').style.maxHeight = '100vh';
+                        document.querySelector('.fi-main-ctn').style.overflow = 'hidden';
                         this.$refs.map.style.height = this.mapFullpageHeight;
+                        this.$refs.map.style.minHeight = this.mapFullpageHeight;
                         this.$refs.map.style.position = 'absolute';
-                        this.$refs.map.style.top = '0';
+                        this.$refs.map.style.top = document.querySelector('.fi-topbar').offsetHeight + 'px';
                         this.$refs.map.style.left = '0';
+                        this.$refs.map.style.zIndex = '5';
                         this.fullpage = true;
                         return;
                     }
 
-                    document.querySelector('.filament-main-content').style.position = '';
-                    document.querySelector('.filament-main.gap-y-6').style.gap = '';
-                    document.querySelector('.filament-header').style.display = '';
+                    document.querySelector('.fi-main-ctn').style.position = '';
                     this.$refs.map.style.height = this.mapDefaultHeight;
+                    this.$refs.map.style.minHeight = '100%';
                     this.$refs.map.style.position = '';
+                    this.$refs.map.style.top = 'inherit';
+                    document.querySelector('.fi-main-ctn').style.maxHeight = null;
+                    document.querySelector('.fi-main-ctn').style.overflow = null;
                     this.fullpage = false;
                 },
                 setTileLayer: function (mode) {
@@ -450,42 +454,5 @@
         </div>
     </div>
 
-    <form wire:submit.prevent="callMountedAction">
-        @php
-            $action = $this->getMountedAction();
-        @endphp
-
-        <x-filament::modal
-            id="{{ $this->getModalActionId() }}"
-            :wire:key="$action ? $this->id . '.actions.' . $action->getName() . '.modal' : null"
-            :visible="filled($action)"
-            :width="$action?->getModalWidth()"
-            :slide-over="$action?->isModalSlideOver()"
-            display-classes="block"
-        >
-            @if ($action)
-                @if ($action->isModalCentered())
-                    <x-slot name="heading">
-                        {{ $action->getModalHeading() }}
-                    </x-slot>
-                @else
-                    <x-slot name="header">
-                        <x-filament::modal.heading>
-                            {{ $action->getModalHeading() }}
-                        </x-filament::modal.heading>
-                    </x-slot>
-                @endif
-
-                {{ $action->getModalContent() }}
-
-                @if ($action->hasFormSchema())
-                    {{ $this->getMountedActionForm() }}
-                @endif
-            @endif
-        </x-filament::modal>
-    </form>
-
-    {{ $this->modal }}
-
-    @stack('modals')
+    <x-filament-actions::modals />
 </div>

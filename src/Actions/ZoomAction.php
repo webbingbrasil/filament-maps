@@ -2,12 +2,6 @@
 
 namespace Webbingbrasil\FilamentMaps\Actions;
 
-use Closure;
-use Filament\Support\Actions\Concerns;
-use Filament\Support\Concerns\Configurable;
-use Filament\Support\Concerns\EvaluatesClosures;
-use Illuminate\Support\Facades\Blade;
-
 class ZoomAction extends Action
 {
     protected string $view = 'filament-maps::zoom-action';
@@ -24,7 +18,7 @@ class ZoomAction extends Action
 
     public function increment(): static
     {
-        return $this->callback(function () {
+        return $this->alpineClickHandler(function () {
             return <<<JS
                 () => { map.setZoom(map.getZoom() + $this->zoom); }
             JS;
@@ -33,7 +27,7 @@ class ZoomAction extends Action
 
     public function decrement(): static
     {
-        return $this->callback(function () {
+        return $this->alpineClickHandler(function () {
             return <<<JS
                 () => { map.setZoom(map.getZoom() - $this->zoom); }
             JS;

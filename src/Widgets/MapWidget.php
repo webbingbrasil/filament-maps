@@ -2,36 +2,33 @@
 
 namespace Webbingbrasil\FilamentMaps\Widgets;
 
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Concerns\Configurable;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Support\Concerns\HasExtraAlpineAttributes;
 use Filament\Support\Concerns\HasExtraAttributes;
-use Filament\Tables\Contracts\RendersFormComponentActionModal;
 use Filament\Widgets\Widget;
 use Illuminate\Contracts\Support\Htmlable;
-use Webbingbrasil\FilamentMaps\Concerns\HasActions;
-use Webbingbrasil\FilamentMaps\Concerns\HasCircles;
-use Webbingbrasil\FilamentMaps\Concerns\HasMapOptions;
-use Webbingbrasil\FilamentMaps\Concerns\HasMarkers;
-use Webbingbrasil\FilamentMaps\Concerns\HasPolygones;
-use Webbingbrasil\FilamentMaps\Concerns\HasPolylines;
-use Webbingbrasil\FilamentMaps\Concerns\HasRectangles;
-use Webbingbrasil\FilamentMaps\Concerns\HasTileLayer;
+use Webbingbrasil\FilamentMaps\Concerns;
 
-abstract class MapWidget extends Widget implements HasForms, RendersFormComponentActionModal
+abstract class MapWidget extends Widget implements HasForms, HasActions
 {
     use HasExtraAttributes;
     use HasExtraAlpineAttributes;
     use EvaluatesClosures;
-    use HasTileLayer;
-    use HasActions;
-    use HasMapOptions;
-    use HasMarkers;
-    use HasPolylines;
-    use HasPolygones;
-    use HasRectangles;
-    use HasCircles;
+    use InteractsWithActions;
+    use InteractsWithForms;
+    use Concerns\InteractsWithMapActions;
+    use Concerns\HasTileLayer;
+    use Concerns\HasMapOptions;
+    use Concerns\HasMarkers;
+    use Concerns\HasPolylines;
+    use Concerns\HasPolygones;
+    use Concerns\HasRectangles;
+    use Concerns\HasCircles;
 
     use Configurable {
         configure as protected configureWidget;
@@ -65,8 +62,8 @@ abstract class MapWidget extends Widget implements HasForms, RendersFormComponen
             ->configurePolylines()
             ->configurePolygones()
             ->configureRectangles()
-            ->configureCircles()
-            ->configureWidget();
+            ->configureCircles();
+//            ->configureWidget();
     }
 
     public function height(string $height): self

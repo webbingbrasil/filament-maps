@@ -3,6 +3,7 @@
     'darkMode' => config('filament.dark_mode'),
     'disabled' => false,
     'form' => null,
+    'iconAlias' => null,
     'icon' => null,
     'keyBindings' => null,
     'indicator' => null,
@@ -80,11 +81,17 @@
             </span>
         @endif
 
-        <x-dynamic-component
-            :component="$icon"
-            :wire:loading.remove.delay="$hasLoadingIndicator"
-            :wire:target="$hasLoadingIndicator ? $loadingIndicatorTarget : false"
-            :class="$iconClasses"
+        <x-filament::icon
+            :attributes="
+            \Filament\Support\prepare_inherited_attributes(
+                new \Illuminate\View\ComponentAttributeBag([
+                    'alias' => $iconAlias,
+                    'icon' => $icon,
+                    'wire:loading.remove.delay.' . config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator,
+                    'wire:target' => $hasLoadingIndicator ? $loadingIndicatorTarget : null,
+                ])
+            )->class([$iconClasses])
+        "
         />
 
         @if ($hasLoadingIndicator)
@@ -124,7 +131,11 @@
             </span>
         @endif
 
-        <x-dynamic-component :component="$icon" :class="$iconClasses" />
+        <x-filament::icon
+            :alias="$iconAlias"
+            :icon="$icon"
+            :class="$iconClasses"
+        />
 
         @if ($indicator)
             <span class="{{ $indicatorClasses }}">

@@ -28,7 +28,7 @@
                 :tile-layer-options="$this->getTileLayerOptions()"
                 :height="$this->getHeight()"
                 :options="$this->getMapOptions()"
-                :actions="$this->getCachedActions()"
+                :actions="$this->getCachedMapActions()"
                 :extra-attribute-bag="$this->getExtraAttributeBag()"
                 :extra-alpine-attribute-bag="$this->getExtraAlpineAttributeBag()"
                 :fullpage="$this->isFullPage()" />

@@ -2,12 +2,6 @@
 
 namespace Webbingbrasil\FilamentMaps\Actions;
 
-use Closure;
-use Filament\Support\Actions\Concerns;
-use Filament\Support\Concerns\Configurable;
-use Filament\Support\Concerns\EvaluatesClosures;
-use Illuminate\Support\Facades\Blade;
-
 class FullpageAction extends Action
 {
     protected string $view = 'filament-maps::fullscreen-action';
@@ -16,7 +10,7 @@ class FullpageAction extends Action
     {
         $this->label(__('Fullpage'));
         $this->icon('filamentmapsicon-fullscreen');
-        $this->callback('toggleFullpage');
+        $this->alpineClickHandler('toggleFullpage');
     }
 
     public static function getDefaultName(): ?string

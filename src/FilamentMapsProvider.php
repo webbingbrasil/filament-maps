@@ -2,7 +2,8 @@
 
 namespace Webbingbrasil\FilamentMaps;
 
-use Filament\Facades\Filament;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
 use BladeUI\Icons\Factory;
 use Spatie\LaravelPackageTools\Package;
@@ -29,12 +30,12 @@ class FilamentMapsProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        Filament::registerRenderHook(
-            'head.end',
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::HEAD_END,
             fn (): View => view('filament-maps::styles'),
         );
-        Filament::registerRenderHook(
-            'scripts.start',
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::SCRIPTS_BEFORE,
             fn (): View => view('filament-maps::scripts'),
         );
     }

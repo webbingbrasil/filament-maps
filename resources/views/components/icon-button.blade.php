@@ -14,7 +14,6 @@
 ])
 
 @php
-
     $buttonClasses = array_merge([
         "filament-button filament-button-size-{$size} inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset",
         'dark:focus:ring-offset-0' => $darkMode,
@@ -89,7 +88,7 @@
         />
 
         @if ($hasLoadingIndicator)
-            <x-filament-support::loading-indicator
+            <x-filament::loading-indicator
                 x-cloak
                 wire:loading.delay
                 :wire:target="$loadingIndicatorTarget"

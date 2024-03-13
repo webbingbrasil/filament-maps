@@ -4,7 +4,7 @@
     $hasBorder = $this->getHasBorder();
     $rounded = $this->getRounded();
 @endphp
-<x-filament::widget class="filament-maps-widget">
+<x-filament-widgets::widget class="filament-maps-widget">
     <div @class([
         'bg-white rounded-xl shadow overflow-hidden',
         'p-2 space-y-2' => $hasBorder,
@@ -16,15 +16,9 @@
                 'px-6 py-4' => !$hasBorder,
             ])>
                 <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                    <x-filament::card.heading>
-                        {{ $heading }}
-                    </x-filament::card.heading>
+                    {{ $heading }}
                 </div>
             </div>
-        @endif
-
-        @if ($heading)
-            <x-filament::hr />
         @endif
 
         <div @class(['px-4 py-2' => $hasBorder])>
@@ -41,10 +35,6 @@
         </div>
 
         @if ($footer)
-            <x-filament::hr />
-        @endif
-
-        @if ($footer)
             <div @class([
                 'px-4 py-2' => $hasBorder,
                 'px-6 py-4' => !$hasBorder,
@@ -53,5 +43,5 @@
             </div>
         @endif
     </div>
-</x-filament::widget>
+</x-filament-widgets::widget>
 

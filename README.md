@@ -11,6 +11,10 @@ Render map widgets using [Leaflet](https://leafletjs.com/).
 - Multiple layers support. A DarkModeTile layer is included.
 - Marker clustering support
 
+
+> **Note**
+> For **Filament 2.x** use **[2.x](https://github.com/webbingbrasil/filament-maps/tree/2.x)** branch
+
 ## Installation
 
 ```bash
@@ -270,18 +274,18 @@ $livewire->updateMarker(string $id, Marker $marker); // update a marker
 
 > Note: Markers need to have a unique name. If you try to add a marker with the same name as an existing one, the existing one will be replaced.
 
-#### Using JS Callback
+#### Using JS
 
 This approach is useful if you want to use a custom javascript to manipulate the map without using Livewire.
 
 ```php
 Actions\Action::make('center')
-    ->callback(<<<JS
+    ->alpineClickHandler(<<<JS
         map.setView([0,0], 2)
     JS)
 ```
 
-> Use `map` property to access the Leaflet instance on your action callback.
+> Use `map` property to access the Leaflet instance on your action handler.
 
 ### Action Position
 

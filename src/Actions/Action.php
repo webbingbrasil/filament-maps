@@ -2,6 +2,7 @@
 
 namespace Webbingbrasil\FilamentMaps\Actions;
 
+use Closure;
 use Filament\Actions\Action as BaseAction;
 use Filament\Actions\Concerns;
 use Illuminate\Support\Str;
@@ -44,5 +45,13 @@ class Action extends BaseAction
     public function getMapActionId(): string
     {
         return Str::afterLast($this->getLivewire()->getName(), '.') . '.' . $this->getName();
+    }
+
+    /**
+     * @deprecated Use alpineClickHandler
+     */
+    public function callback(string | Closure | null $callback): static
+    {
+        return $this->alpineClickHandler($callback);
     }
 }

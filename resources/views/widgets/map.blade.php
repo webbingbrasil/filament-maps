@@ -5,11 +5,7 @@
     $rounded = $this->getRounded();
 @endphp
 <x-filament-widgets::widget class="filament-maps-widget">
-    <div @class([
-        'bg-white rounded-xl shadow overflow-hidden',
-        'p-2 space-y-2' => $hasBorder,
-        'dark:border-gray-600 dark:bg-gray-800' => config('filament.dark_mode'),
-    ])>
+    <x-filament::card class="filament-maps-card">
         @if ($heading)
             <div @class([
                 'px-4 py-2' => $hasBorder,
@@ -42,6 +38,6 @@
                 {{ $footer }}
             </div>
         @endif
-    </div>
+    </x-filament::card>
 </x-filament-widgets::widget>
 

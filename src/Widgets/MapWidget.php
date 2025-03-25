@@ -38,6 +38,8 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
 
     protected static string $view = 'filament-maps::widgets.map';
 
+    protected static ?string $pollingInterval = null;
+
     protected string $height = '400px';
 
     protected string | Htmlable | null $heading = null;
@@ -66,6 +68,11 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
             ->configureRectangles()
             ->configureCircles();
 //            ->configureWidget();
+    }
+
+    public function updateMap(): void
+    {
+        // Add Code you want to update map with.
     }
 
     public function height(string $height): self

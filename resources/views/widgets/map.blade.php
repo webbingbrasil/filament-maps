@@ -19,9 +19,9 @@
 
         <div    @class(['px-4 py-2' => $hasBorder])
                 @if ($pollingInterval = $this->getPollingInterval())
-                    wire:poll.{{ $pollingInterval }}.visible
+                    wire:poll.{{ $pollingInterval }}.visible="updateMap"
                 @endif
-                >
+        >
             <x-filament-maps::map
                 :rounded="$rounded && $hasBorder"
                 :tile-layer-url="$this->getTileLayerUrl()"

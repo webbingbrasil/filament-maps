@@ -30,7 +30,6 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
     use Concerns\HasPolygones;
     use Concerns\HasRectangles;
     use Concerns\HasCircles;
-    use CanPoll;
 
     use Configurable {
         configure as protected configureWidget;
@@ -68,6 +67,11 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
             ->configureRectangles()
             ->configureCircles();
 //            ->configureWidget();
+    }
+
+    protected function getPollingInterval(): ?string
+    {
+        return static::$pollingInterval;
     }
 
     public function updateMap(): void

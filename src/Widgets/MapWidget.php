@@ -35,7 +35,7 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
         configure as protected configureWidget;
     }
 
-    protected static string $view = 'filament-maps::widgets.map';
+    protected string $view = 'filament-maps::widgets.map';
 
     protected static ?string $pollingInterval = null;
 

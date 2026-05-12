@@ -30,14 +30,13 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
     use Concerns\HasPolygones;
     use Concerns\HasRectangles;
     use Concerns\HasCircles;
+    use CanPoll;
 
     use Configurable {
         configure as protected configureWidget;
     }
 
     protected string $view = 'filament-maps::widgets.map';
-
-    protected static ?string $pollingInterval = null;
 
     protected string $height = '400px';
 
@@ -70,11 +69,6 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
         $this->setUp();
 
         return $this;
-    }
-
-    protected function getPollingInterval(): ?string
-    {
-        return static::$pollingInterval;
     }
 
     public function updateMap(): void

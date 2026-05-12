@@ -547,23 +547,6 @@ $livewire->removeCircle('circle-name');
 $livewire->updateCircle(Circle::make('circle-name')->lat(...)->lng(...)->options([...]));
 ```
 
-### Update Map / Polling
-
-set pollingInterval to anything you like inside your widget:
-```php
-    protected static ?string $pollingInterval = '10s';
-```
-
-then inside your widget declare public function named updateMap, and add any logic you wish inside it
-
-```php
-    public function updateMap(): void
-    {
-        // for example this clears markers, you can add markers, polygon ..etc
-        $this->mapMarkers([]);
-    }
-```
-
 ## Images
 
 ![Header & Footer](https://raw.githubusercontent.com/webbingbrasil/filament-maps/main/docs/images/image-header-footer.png)

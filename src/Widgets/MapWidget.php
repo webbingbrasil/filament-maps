@@ -71,11 +71,6 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
         return $this;
     }
 
-    public function updateMap(): void
-    {
-        // Add Code you want to update map with.
-    }
-
     public function height(string $height): self
     {
         $this->height = $height;

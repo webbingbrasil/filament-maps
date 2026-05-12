@@ -546,7 +546,6 @@ $livewire->addCircle(Circle::make('circle-name')->lat(...)->lng(...)->options([.
 $livewire->removeCircle('circle-name');
 $livewire->updateCircle(Circle::make('circle-name')->lat(...)->lng(...)->options([...]));
 ```
-
 ## Images
 
 ![Header & Footer](https://raw.githubusercontent.com/webbingbrasil/filament-maps/main/docs/images/image-header-footer.png)

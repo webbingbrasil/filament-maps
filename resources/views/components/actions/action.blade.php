@@ -4,25 +4,34 @@
     'icon' => null,
 ])
 
+@php
+    $isDisabled = $action->isDisabled();
+    $url = $action->getUrl();
+@endphp
+
 <x-dynamic-component
-    :x-on:click="$action->getAlpineClickHandler()"
-    :component="$component"
-    :dark-mode="config('filament.dark_mode')"
-    :attributes="\Filament\Support\prepare_inherited_attributes($attributes)->merge($action->getExtraAttributes())"
-    :form="$action->getFormToSubmit()"
-    :tag="$action->getUrl() ? 'a' : 'button'"
-    :wire:click="$action->getLivewireClickHandler()"
-    :href="$action->isEnabled() ? $action->getUrl() : null"
-    :target="$action->shouldOpenUrlInNewTab() ? '_blank' : null"
-    :type="$action->canSubmitForm() ? 'submit' : 'button'"
     :color="$action->getColor()"
-    :key-bindings="$action->getKeybindings()"
-    :tooltip="$action->getTooltip()"
-    :disabled="$action->isDisabled()"
+    :component="$component"
+    :disabled="$isDisabled"
+    :form="$action->getFormToSubmit()"
+    :form-id="$action->getFormId()"
+    :href="$isDisabled ? null : $url"
     :icon="$icon ?? $action->getIcon()"
-    :size="$action->getSize()"
+    :icon-size="$action->getIconSize()"
+    :key-bindings="$action->getKeyBindings()"
     :label-sr-only="$action->isLabelHidden()"
-    dusk="filament.admin.action.{{ $action->getName() }}"
+    :tag="$url ? 'a' : 'button'"
+    :target="($url && $action->shouldOpenUrlInNewTab()) ? '_blank' : null"
+    :tooltip="$action->getTooltip()"
+    :type="$action->canSubmitForm() ? 'submit' : 'button'"
+    :wire:click="$action->getLivewireClickHandler()"
+    :wire:target="$action->getLivewireTarget()"
+    :x-on:click="$action->getAlpineClickHandler()"
+    :attributes="
+        \Filament\Support\prepare_inherited_attributes($attributes)
+            ->merge($action->getExtraAttributes(), escape: false)
+            ->class(['fi-ac-action'])
+    "
 >
     {{ $slot }}
 </x-dynamic-component>

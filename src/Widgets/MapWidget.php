@@ -60,13 +60,16 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
 
     public function configure(): static
     {
-        return $this
+        $this
             ->configureMarkers()
             ->configurePolylines()
             ->configurePolygones()
             ->configureRectangles()
             ->configureCircles();
-//            ->configureWidget();
+
+        $this->setUp();
+
+        return $this;
     }
 
     protected function getPollingInterval(): ?string
@@ -136,7 +139,7 @@ abstract class MapWidget extends Widget implements HasForms, HasActions
 
     public function getRounded(): bool
     {
-        return $this->rounded;
+        return $this->rounded && $this->getHasBorder();
     }
 
     public function isFullPage(): bool

@@ -94,26 +94,6 @@ public function setUp(): void
 
 > The `setUp` method is called on `mount` of the widget. See [livewire lifecycle hooks](https://laravel-livewire.com/docs/2.x/lifecycle-hooks) for more information.
 
-### Global Configuration
-
-If you want to set a default configuration for all instances of the map widget, you can use the `configureUsing` method in a service provider:
-
-```php
-MyMap::configureUsing(function (ResellerMap $widget) {
-    $widget->mapMarkers([
-        Marker::make('id')
-            ->lat(51.505)
-            ->lng(-0.09)
-            ->popup('I am a popup')
-            ->tooltip('I am a tooltip'),
-    ])
-    ->tileLayerUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-    ->tileLayerOptions([
-        'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    ])
-});
-```
-
 ## Tile Layers
 
 The map uses OpenStreetMap tiles by default, but you can change it to use any other provider using `$tileLayerUrl` property or `tileLayerUrl` method. It's recommended to also use the `tileLayerOptions` to set correct attributions.

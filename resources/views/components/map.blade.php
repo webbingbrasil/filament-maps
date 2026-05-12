@@ -12,6 +12,7 @@
     'modals' => null,
     'rounded' => true,
     'fullpage' => false,
+    'pollingInterval' => null,
 ])
 
 @php
@@ -20,7 +21,15 @@
         fn (\Webbingbrasil\FilamentMaps\Actions\Action $action ): bool => ! $action->isHidden(),
     );
 @endphp
-<div class="filament-map">
+<div
+    @class([
+        'filament-map h-full',
+    ])
+
+    @if ($pollingInterval)
+        wire:poll.{{ $pollingInterval }}
+    @endif
+>
     <div
         {{ $attributes->class([
             'h-full w-full overflow-hidden',
@@ -28,6 +37,7 @@
         ]) }}
         {{ $extraAttributeBag }}>
         <div
+            class="h-full"
             wire:ignore
             x-data="{
                 mode: null,
@@ -216,26 +226,26 @@
                 },
                 toggleFullpage: function () {
                     if (this.fullpage == false) {
-                        document.querySelector('.fi-main-ctn').style.position = 'relative';
-                        document.querySelector('.fi-main-ctn').style.maxHeight = '100vh';
-                        document.querySelector('.fi-main-ctn').style.overflow = 'hidden';
+                        document.querySelector('.fi-main-ctn').style.height = '100vh';
+                        document.querySelector('.fi-main').style.position = 'relative';
+                        document.querySelector('.fi-main').style.overflow = 'hidden';
                         this.$refs.map.style.height = this.mapFullpageHeight;
                         this.$refs.map.style.minHeight = this.mapFullpageHeight;
                         this.$refs.map.style.position = 'absolute';
-                        this.$refs.map.style.top = document.querySelector('.fi-topbar').offsetHeight + 'px';
+                        this.$refs.map.style.top = '0';
                         this.$refs.map.style.left = '0';
                         this.$refs.map.style.zIndex = '5';
                         this.fullpage = true;
                         return;
                     }
 
-                    document.querySelector('.fi-main-ctn').style.position = '';
+                    document.querySelector('.fi-main-ctn').style.maxHeight = null;
+                    document.querySelector('.fi-main').style.position = '';
+                    document.querySelector('.fi-main').style.overflow = null;
                     this.$refs.map.style.height = this.mapDefaultHeight;
                     this.$refs.map.style.minHeight = '100%';
                     this.$refs.map.style.position = '';
                     this.$refs.map.style.top = 'inherit';
-                    document.querySelector('.fi-main-ctn').style.maxHeight = null;
-                    document.querySelector('.fi-main-ctn').style.overflow = null;
                     this.fullpage = false;
                 },
                 setTileLayer: function (mode) {
@@ -440,7 +450,7 @@
             @if (count($actions))
                 <div
                     {{ $attributes->class([
-                        'filament-map-actions',
+                        'absolute z-10 p-2 space-y-2 filament-map-actions',
                     ]) }}
                 >
                     @foreach ($actions as $action)
